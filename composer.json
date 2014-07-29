@@ -1,0 +1,25 @@
+{
+    "name": "nurmanhabib/navigator",
+    "description": "Generate navigasi dengan tampilan bootstrap untuk Laravel",
+    "license": "MIT",
+    "keywords": ["navigation","navigator"],
+    "authors": [
+        {
+            "name": "Habib Nurrahman",
+            "email": "nurmanhabib@gmail.com",
+            "homepage": "http://habibnurrahman.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nurmanhabib\\Navigator\\": "src/"
+        }
+    }
+}
