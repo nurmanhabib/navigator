@@ -12,6 +12,8 @@ class Navigator {
     public $liparent_icon   = '<i class="fa fa-angle-left pull-right"></i>';
     public $liparent_active = 'active';
 
+    public $active_element  = array('li' => array(), 'a' => array());
+
     public $child           = array();
     public $active          = '';
 
@@ -33,6 +35,9 @@ class Navigator {
         
         if(array_key_exists('liactive', $options))
             $this->liactive = $options['liactive'];
+        
+        if(array_key_exists('active_element', $options))
+            $this->active_element   = $options['active_element'];
         
         if(array_key_exists('liparent_attr', $options))
             $this->liparent_attr    = $options['liparent_attr'];
@@ -115,14 +120,23 @@ class Navigator {
             else
             {
                 // Tanpa sub-listing
-                if($this->active == $link)
+                if($this->active == $link) {
+
                     $this->liattr['class']  .= ' ' . $this->liactive;
-                else
+
+                    $html   .= '<li' . $this->generate_attr($this->liattr) . '>';
+                    $html   .= '<a href="' . $link . '" ' . $this->generate_attr($this->active_element['a']) . '>' . $text . '</a>';
+                    $html   .= '</li>';
+
+                } else {
+
                     $this->liattr['class']  = str_replace(' ' . $this->liactive, '', $this->liattr['class']);
 
-                $html   .= '<li' . $this->generate_attr($this->liattr) . '>';
-                $html   .= '<a href="' . $link . '">' . $text . '</a>';
-                $html   .= '</li>';
+                    $html   .= '<li' . $this->generate_attr($this->liattr) . '>';
+                    $html   .= '<a href="' . $link . '">' . $text . '</a>';
+                    $html   .= '</li>';
+
+                }
             }
         }
 
