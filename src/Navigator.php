@@ -32,7 +32,7 @@ class Navigator {
         } else {
             $func_name  = ucfirst($options);
 
-            call_user_func('template' . $func_name);
+            call_user_func(array(__CLASS__, 'template' . $func_name));
         }
     }
 
