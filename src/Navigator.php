@@ -27,6 +27,17 @@ class Navigator {
         $this->nav      = $navs;
         $this->active   = $active;
 
+        if(is_array($options)) {
+            $this->set_options($options);
+        } else {
+            $func_name  = ucfirst($options);
+
+            call_user_func('template' . $func_name);
+        }
+    }
+
+    public function set_options($options)
+    {
         if(array_key_exists('ulattr', $options))
             $this->ulattr   = $options['ulattr'];
 
@@ -73,6 +84,25 @@ class Navigator {
             if($link == $active)
                 return true;
                 return false;
+    }
+
+    // template
+    public function templateSbadmin()
+    {
+        $options    = array(
+            'ulattr'            => array('class' => 'nav', 'id' => 'side-menu'),
+            'liactive'          => '',
+            'active_element'    => array('a' => array('class' => 'active')),
+            'liparent_attr'     => array('class' => ''),
+            'child'             => array(
+                'ulattr'        => array('class' => 'nav nav-second-level collapse'),
+                'liactive'      => 'active'
+            )
+        );
+
+        $this->set_options($options);
+
+        return $this;
     }
 
     private function generate_attr($attributes, $first_spacing = true)
