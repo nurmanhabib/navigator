@@ -22,6 +22,20 @@ class Nav {
         $this->list     = $list;
         $this->active   = $active;
         $this->disabled = $disabled;
+
+        $config         = Config::get('navigator::config');
+
+        $this->setTemplate($config['template']);
+    }
+
+    public function setTemplate($name)
+    {
+        $template_alias     = Config::get('navigator::template');
+        $template_class     = $template_alias[$name];
+
+        $this->template     = new $template_class($this);
+
+        return $this;
     }
 
     public function setActive($active)
@@ -32,13 +46,13 @@ class Nav {
     }
 
     public function links($view = null)
-    {        
+    {
         $template_name = Config::get('navigator::config.template');
         $template_class = Config::get('navigator::template.'.$template_name);
         
         $template = new $template_class($this, $view);
 
-        return $template->render();
+        return $this->template->setView($view)->render();
     }
 
 }

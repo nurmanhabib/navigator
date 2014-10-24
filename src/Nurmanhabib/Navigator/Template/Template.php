@@ -37,6 +37,14 @@ class Template {
         return '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$text.' <span class="caret"></span></a>'.$nav->links().'</li>';
     }
 
+    public function setView($name = null)
+    {
+        if (!empty($name))
+            $this->view = $name;
+
+        return $this;
+    }
+
     public function render()
     {
         return View::make($this->view, ['nav' => $this->nav, 'list' => $this->renderList()]);
