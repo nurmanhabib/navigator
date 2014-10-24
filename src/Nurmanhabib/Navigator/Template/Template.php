@@ -32,9 +32,14 @@ class Template {
         return '<li class="active"><a href="'.$url.'">'.$text.'</a></li>';
     }
 
-    public function getItemParent($text, Nav $nav)
+    public function getParent($text, Nav $nav)
     {
-        return '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$text.' <span class="caret"></span></a>'.$nav->links().'</li>';
+        return '';
+    }
+
+    public function getActiveParent($text, Nav $nav)
+    {
+        return '';
     }
 
     public function setView($name = null)
