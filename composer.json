@@ -1,0 +1,20 @@
+{
+    "name": "nurmanhabib/navigator",
+    "description": "",
+    "authors": [
+        {
+            "name": "Roo Development",
+            "email": "dev@roodevel.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Nurmanhabib\\Navigator": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
