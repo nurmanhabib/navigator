@@ -55,4 +55,9 @@ class Nav {
         return $this->template->setView($view)->render();
     }
 
+    public function __toString()
+    {
+        return (string) $this->links();
+    }
+
 }
