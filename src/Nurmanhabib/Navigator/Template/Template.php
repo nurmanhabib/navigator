@@ -32,12 +32,12 @@ class Template {
         return '<li class="active"><a href="'.$url.'">'.$text.'</a></li>';
     }
 
-    public function getParent($text, Nav $nav)
+    public function getChild($text, Nav $nav)
     {
         return '';
     }
 
-    public function getActiveParent($text, Nav $nav)
+    public function getActiveChild($text, Nav $nav)
     {
         return '';
     }
@@ -50,6 +50,17 @@ class Template {
         return $this;
     }
 
+    public function checkActive(Nav $nav, $active = '')
+    {
+        if (!empty($active))
+            $nav->active = $active;            
+
+        foreach ($nav->list as $text => $url)
+            if ($nav->active == $url)
+                return true;
+                return false;
+    }
+
     public function render()
     {
         return View::make($this->view, ['nav' => $this->nav, 'list' => $this->renderList()]);
@@ -60,10 +71,19 @@ class Template {
         $html = '';
 
         foreach ($this->nav->list as $text => $url) {
-            if ($this->nav->active == $url)
-                $html .= $this->getActiveItem($text, $url);
-            else
-                $html .= $this->getItem($text, $url);
+            // Cek ada sub nav tidak
+            if ($url instanceof Nav) {
+                if ($this->checkActive($url, $this->nav->active)) {
+                    $html .= $this->getActiveChild($text, $url);
+                } else {
+                    $html .= $this->getChild($text, $url);
+                }
+            } else {
+                if ($this->nav->active == $url)
+                    $html .= $this->getActiveItem($text, $url);
+                else
+                    $html .= $this->getItem($text, $url);
+            }
         }
 
         return $html;

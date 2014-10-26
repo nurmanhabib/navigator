@@ -3,13 +3,14 @@
     "description": "",
     "authors": [
         {
-            "name": "Roo Development",
-            "email": "dev@roodevel.com"
+            "name": "Habib Nurrahman",
+            "email": "nurmanhabib@gmail.com"
         }
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "4.2.*"
+        "illuminate/support": "4.2.*",
+        "nurmanhabib/button": "dev-master"
     },
     "autoload": {
         "psr-0": {
