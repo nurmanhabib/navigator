@@ -43,7 +43,7 @@ class NavigatorServiceProvider extends ServiceProvider {
         {
             $loader = \Illuminate\Foundation\AliasLoader::getInstance();
             $loader->alias('Navigator', 'Nurmanhabib\Navigator\Facades\Navigator');
-        })
+        });
     }
 
     /**
