@@ -38,6 +38,12 @@ class NavigatorServiceProvider extends ServiceProvider {
         {
             return new Nav;
         });
+
+        $this->app->booting(function()
+        {
+            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+            $loader->alias('Navigator', 'Nurmanhabib\Navigator\Facades\Navigator');
+        })
     }
 
     /**
