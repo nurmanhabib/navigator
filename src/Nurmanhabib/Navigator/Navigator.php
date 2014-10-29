@@ -1,7 +1,5 @@
 <?php namespace Nurmanhabib\Navigator;
 
-use View;
-
 class Navigator {
 
     protected $navs;
@@ -11,6 +9,7 @@ class Navigator {
     public function __construct()
     {
         $this->navs = array();
+        $this->current = array('name' => '', 'nav' => new Nav);
     }
 
     public function set($name, $list, $active = '', $disabled = array())
@@ -51,6 +50,11 @@ class Navigator {
         $nav = array_key_exists($name, $this->navs) ? $this->navs[$name] : new Nav;
         
         return $nav;
+    }
+
+    public function __toString()
+    {
+        return (string) $this->current['nav'];
     }
 
 }

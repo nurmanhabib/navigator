@@ -71,6 +71,9 @@ class Template {
         $html = '';
 
         foreach ($this->nav->list as $text => $url) {
+            if (is_array($url))
+                $url = new Nav($url);
+
             // Cek ada sub nav tidak
             if ($url instanceof Nav) {
                 if ($this->checkActive($url, $this->nav->active)) {
