@@ -1,6 +1,8 @@
 {
     "name": "nurmanhabib/navigator",
-    "description": "",
+    "description": "Generate multi menu navigasi dengan nama yang unik, dapat ditampilkan dimana saja. Custom templating.",
+    "license": "MIT",
+    "keywords": ["navigation","navigator","menu","bootstrap"],
     "authors": [
         {
             "name": "Habib Nurrahman",
