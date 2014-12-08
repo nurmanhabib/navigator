@@ -1,26 +1,44 @@
 navigator
 =========
 
-Generate navigasi dengan tampilan bootstrap untuk Laravel
+Generate multi menu navigasi dengan nama yang unik, dapat ditampilkan dimana saja. Custom templating.
 
-    $navs   = array(
-        '<i class="fa fa-dashboard"></i> <span>Home</span>'                 => route('dashboard'),
-        '<i class="fa fa-credit-card"></i> <span>Pembayaran Baru</span>'    => route('backend.zakat.create'),
-        '<i class="fa fa-coffee"></i> <span>Rekapitulasi</span>'            => array(
-            '<i class="fa fa-coffee"></i> <span>Ringkasan</span>'           => route('dashboard'),
-            '<i class="fa fa-coffee"></i> <span>Semua</span>'               => route('backend.zakat'),
-            '<i class="fa fa-download"></i> <span>Download</span>'          => route('export'),
-        ),
-        '<i class="fa fa-print"></i> <span>Cetak Nota Kosong</span>'        => route('invoice.blank'),
-        '<i class="fa fa-cog"></i> <span>Options</span>'                    => '#',
+    $list = array(
+        'Dashboard' => url('home'),
+        'Kasus'     => url('kasus'),
+        'Users'     => url('users'),
     );
 
-    Navigator::initialize($navs, array(
-        'ulattr'        => array('class' => 'sidebar-menu'),
-        'liactive'      => 'active',
-        'liparent_attr' => array('class' => 'treeview'),
-        'child'         => array(
-            'ulattr'        => array('class' => 'treeview-menu'),
-            'liactive'      => 'active'
-        )
-    ));
+    Navigator::set('sidebar', $list);
+
+### Pemanggilan pada view
+Pemanggilan dapat dilakukan dimana saja, Anda dapat menampilkan multi navigator dengan lokasi yang berbeda berdasarkan name yang sudah di buat.
+
+    {{ Navigator::name('sidebar') }}
+
+### Fungsi tambahan
+#### ->setTemplate();
+Template yang tersedia:
+
+    'stacked'           => 'Nurmanhabib\\Navigator\\Template\\Stacked',
+    'pills'             => 'Nurmanhabib\\Navigator\\Template\\Pills',
+    'sb-admin-2'        => 'Nurmanhabib\\Navigator\\Template\\SBAdmin2',
+    'sb-admin-2-child'  => 'Nurmanhabib\\Navigator\\Template\\SBAdmin2\\Child',
+    'treeview'          => 'Nurmanhabib\\Navigator\\Template\\Treeview',
+    'treeview-child'    => 'Nurmanhabib\\Navigator\\Template\\Treeview\\Child',
+    
+Secara default, template akan membaca konfigurasi pada file **config/package/nurmanhabib/navigator/config.php**
+
+    'template' => 'stacked'
+    
+Mengganti template pada saat inisilasi navigator
+
+    Navigator::set('sidebar', $list)->setTemplate('treeview');
+    
+Mengganti template pada navigator yang sudah dibuat
+
+    Navigator::name('sidebar')->setTemplate('treeview');
+
+#### ->setActive();
+
+    Navigator::set('sidebar', $list)->setActive(route('home'));
