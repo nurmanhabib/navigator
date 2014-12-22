@@ -2,6 +2,8 @@
 
 return array(
 
-    'template' => 'stacked'
+    'template' => 'stacked',
+
+    'auto_active' => true,
 
 );

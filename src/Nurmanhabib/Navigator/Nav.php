@@ -2,7 +2,7 @@
 
 use Config;
 
-class Nav {
+class Nav extends Navigator {
 
     public $list;
 
