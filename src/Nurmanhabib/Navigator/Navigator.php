@@ -13,9 +13,9 @@ class Navigator {
 
     public function __construct()
     {
-        $this->navs = array();
-        $this->current = array('name' => '', 'nav' => new Nav);
-        $this->active = Config::get('navigator::auto_active', false) ? URL::current() : '';
+        $this->navs     = array();
+        $this->current  = array('name' => '', 'nav' => new Nav);
+        $this->active   = Config::get('navigator::auto_active', false) ? URL::full() : '';
     }
 
     public function set($name, $list, $active = '', $disabled = array())
