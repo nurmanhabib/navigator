@@ -1,0 +1,20 @@
+{
+    "name": "nurmanhabib/navigator",
+    "description": "",
+    "authors": [
+        {
+            "name": "Habib Nurrahman",
+            "email": "nurmanhabib@yahoo.co.id"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "5.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nurmanhabib\\Navigator\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
