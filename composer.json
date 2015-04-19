@@ -1,6 +1,8 @@
 {
     "name": "nurmanhabib/navigator",
-    "description": "",
+    "description": "Generate multi menu navigasi dengan nama yang unik, dapat ditampilkan dimana saja. Custom templating. Support Laravel 5.",
+    "license": "MIT",
+    "keywords": ["navigation", "navigator", "menu", "bootstrap", "laravel5", "generator"],
     "authors": [
         {
             "name": "Habib Nurrahman",
