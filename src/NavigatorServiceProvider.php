@@ -11,6 +11,11 @@ class NavigatorServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = false;
 
+	public function boot()
+	{
+	    $this->loadViewsFrom(__DIR__.'/../views', 'navigator');
+	}
+
 	/**
 	 * Register the service provider.
 	 *
@@ -18,7 +23,16 @@ class NavigatorServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+		$this->app->bind('navigator', function($app)
+		{
+			return new Navigator($app);
+		});
+
+        $this->app->booting(function()
+        {
+            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+            $loader->alias('Navigator', 'Nurmanhabib\Navigator\Facades\Navigator');
+        });
 	}
 
 	/**
