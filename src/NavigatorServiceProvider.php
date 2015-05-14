@@ -13,7 +13,12 @@ class NavigatorServiceProvider extends ServiceProvider {
 
 	public function boot()
 	{
-	    $this->loadViewsFrom(__DIR__.'/../views', 'navigator');
+	    $this->loadViewsFrom(__DIR__ . '/../views', 'navigator');
+	    $this->loadViewsFrom(base_path('resources/views/vendor/navigator'), 'mynavigator');
+
+	    $this->publishes([
+	    	__DIR__ . '/../views/template' => base_path('resources/views/vendor/navigator/template'),
+	    ]);
 	}
 
 	/**
