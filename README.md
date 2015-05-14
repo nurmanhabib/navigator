@@ -26,7 +26,31 @@ Tambahkan `Nurmanhabib\Navigator\NavigatorServiceProvider` ke dalam file di `con
     ];
 
 
-----------
+#### <i class="icon-file"></i> Tambahkan Service Provider
+
+Tambahkan `Nurmanhabib\Navigator\NavigatorServiceProvider` ke dalam file di `config/app.php` pada array `providers`.
+
+    'providers' = [
+        ...,
+        ...,
+        
+        'Nurmanhabib\Navigator\NavigatorServiceProvider',
+    ];
+
+
+#### <i class="icon-file"></i> Publish Contoh Template
+
+Navigator mempunyai contoh template `arjuna` dan `sbadmin2` yang akan disalin ke dalam folder `resources/views/vendor/navigator/template`
+
+    php artisan vendor:publish
+
+Navigator memberikan sebuah *namespace* `mynavigator` pada folder `resources/views/vendor/navigator`. Anda dapat mengakses view dengan mudah, misalnya.
+
+    Navigator::setTemplate('mynavigator::template.sbadmin2');
+
+atau tetap masih dapat diakses dengan cara
+
+    Navigator::setTemplate('vendor.navigator.template.sbadmin2');
 
 
 Contoh Penggunaan
@@ -138,19 +162,21 @@ Navigator ini diusahakan fleksibel terhadap struktur HTML setiap desain template
 
  - resources
      - views
-         - **mynavigator**
-             - `index` *- required*
-             - `item` *- required, default*
-             - `item_active` *- opsional*
-             - `item_disabled` *- opsional*
-             - `child` *- opsional*
-             - `child_active` *- opsional*
+         - **template**
+             - **mynavigator**
+                 - `index`.blade.php *- required*
+                 - `item`.blade.php *- required, default*
+                 - `item_active`.blade.php *- opsional*
+                 - `item_disabled`.blade.php *- opsional*
+                 - `child`.blade.php *- opsional*
+                 - `child_active`.blade.php *- opsional*
 
 Folder `mynavigator` sekaligus menjadi nama template yang akan digunakan untuk Navigator. Semua file view harus mempunyai akhiran `.php` atau jika menggunakan Blade menggunakan akhiran `.blade.php`. Untuk set template kustomisasi, gunakan method berikut.
 
-    Navigator::setTemplate('mynavigator');
+    Navigator::setTemplate('template.mynavigator');
 
 > Jika di dalam template file yang ditandai opsional tidak dibuat, maka Navigator akan membaca `item.blade.php` sebagai default.
+> Membuat template di dalam folder `vendor/navigator`, maka dapat dipanggil dengan *namespace* `mynavigator`.
 
 Selain itu, jika akan membuat template untuk *child*, maka akan membaca folder `child`. Struktur dari folder child berlaku rekursif dengan item.
 
@@ -159,18 +185,18 @@ Selain itu, jika akan membuat template untuk *child*, maka akan membaca folder `
          - **mynavigator**
              - **child**
                  - **child**
-                     - `index`
-                     - `item`
+                     - `index`.blade.php
+                     - `item`.blade.php
                      - ...
-                 - `index`
-                 - `item`
+                 - `index`.blade.php
+                 - `item`.blade.php
                  - ...
-             - `index`
-             - `item`
-             - `item_active`
-             - `item_disabled`
-             - `child`
-             - `child_active`
+             - `index`.blade.php
+             - `item`.blade.php
+             - `item_active`.blade.php
+             - `item_disabled`.blade.php
+             - `child`.blade.php
+             - `child_active`.blade.php
 
 
 ----------
