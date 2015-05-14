@@ -1,5 +1,6 @@
 {
     "name": "nurmanhabib/navigator",
+<<<<<<< HEAD
     "description": "Generate multi menu navigasi dengan nama yang unik, dapat ditampilkan dimana saja. Custom templating. Support Laravel 5.",
     "license": "MIT",
     "keywords": ["navigation", "navigator", "menu", "sidebar", "navbar", "bootstrap", "bootstrap3", "laravel", "laravel5", "generator"],
@@ -7,10 +8,20 @@
         {
             "name": "Habib Nurrahman",
             "email": "nurmanhabib@yahoo.co.id"
+=======
+    "description": "Generate multi menu navigasi dengan nama yang unik, dapat ditampilkan dimana saja. Custom templating.",
+    "license": "MIT",
+    "keywords": ["navigation","navigator","menu","bootstrap"],
+    "authors": [
+        {
+            "name": "Habib Nurrahman",
+            "email": "nurmanhabib@gmail.com"
+>>>>>>> b32f798841e78275085438e0bdc3359db9bb16d2
         }
     ],
     "require": {
         "php": ">=5.4.0",
+<<<<<<< HEAD
         "illuminate/support": "5.0.*"
     },
     "autoload": {
@@ -20,3 +31,15 @@
     },
     "minimum-stability": "stable"
 }
+=======
+        "illuminate/support": "*",
+        "nurmanhabib/button": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Nurmanhabib\\Navigator": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
+>>>>>>> b32f798841e78275085438e0bdc3359db9bb16d2

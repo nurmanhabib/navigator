@@ -8,10 +8,16 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
+<<<<<<< HEAD
          syntaxCheck="false"
 >
     <testsuites>
         <testsuite name="Package Test Suite">
+=======
+         syntaxCheck="false">
+    <testsuites>
+        <testsuite name="Nacho Test Suite">
+>>>>>>> b32f798841e78275085438e0bdc3359db9bb16d2
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
