@@ -14,7 +14,7 @@ class NavCollection {
         $this->attributes = [
             'items'    => $items,
             'active'   => $active,
-            'template' => 'navigator::template.arjuna',
+            'template' => 'navigator::template.sbadmin2',
         ];
 
         $this->views = [
