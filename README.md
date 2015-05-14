@@ -1,7 +1,7 @@
 Welcome to Navigator!
 ===================
 
-Generate multi menu navigasi dengan nama yang unik, dapat ditampilkan dimana saja. Custom templating.
+Generate multi menu navigasi dengan nama yang unik, dapat ditampilkan dimana saja. Custom templating. Support Laravel 5.
 
 ----------
 Instalasi
@@ -32,7 +32,7 @@ Tambahkan `Nurmanhabib\Navigator\NavigatorServiceProvider` ke dalam file di `con
 Contoh Penggunaan
 -------------
 
-Langsung coba inisialisasi navigator pertama Anda. Tambahkan navigator pada contructor Controller utama agar dapat digunakan disetiap Controller dibawahnya.
+Langsung coba inisialisasi navigator pertama Anda. Tambahkan navigator pada *constructor* Controller utama agar dapat digunakan disetiap Controller dibawahnya.
 
     class Controller extends BaseController
     {
@@ -146,7 +146,7 @@ Navigator ini diusahakan fleksibel terhadap struktur HTML setiap desain template
              - `child` *- opsional*
              - `child_active` *- opsional*
 
-Folder `mynavigator` sekaligus menjadi nama template yang akan didunakan untuk Navigator. Semua file view harus mempunyai `.php` atau jika menggunakan Blade menggunakan akhiran `.blade.php`. Untuk set template kustomisasi, gunakan method berikut.
+Folder `mynavigator` sekaligus menjadi nama template yang akan digunakan untuk Navigator. Semua file view harus mempunyai akhiran `.php` atau jika menggunakan Blade menggunakan akhiran `.blade.php`. Untuk set template kustomisasi, gunakan method berikut.
 
     Navigator::setTemplate('mynavigator');
 
