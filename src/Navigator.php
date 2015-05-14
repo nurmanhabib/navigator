@@ -32,16 +32,20 @@ class Navigator {
         return $current;
     }
 
-    public function setActive($url)
-    {
-        $this->collections[$this->name]->setActive($url);
-    }
-
     public function show($name = '')
     {
         if ($name) $this->setCurrent($name);
 
         return $this->collections[$this->name];
+    }
+
+    public function name($name)
+    {
+        if (!array_key_exists($name, $this->collections))
+            $this->collections[$name] = new NavCollection;
+            $this->setCurrent($name);
+
+            return $this;
     }
 
     public function setCurrent($name, NavCollection $collection = null)
@@ -53,13 +57,14 @@ class Navigator {
         return $collection;
     }
 
-    public function name($name)
+    public function setActive($url)
     {
-        if (!array_key_exists($name, $this->collections))
-            $this->collections[$name] = new NavCollection;
-            $this->setCurrent($name);
+        $this->collections[$this->name]->setActive($url);
+    }
 
-            return $this;
+    public function setTemplate($name)
+    {
+        $this->collections[$this->name]->setTemplate($name);
     }
 
     public function __set($name, NavCollection $collection)

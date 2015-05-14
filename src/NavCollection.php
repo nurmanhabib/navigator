@@ -27,9 +27,9 @@ class NavCollection {
         ];
     }
 
-    public function instance($items = [], $disabled = [])
+    public function instance($items = [], $active = '')
     {
-        return new NavCollection($items, $disabled);
+        return new NavCollection($items, $active);
     }
 
     public function instanceCopy()
