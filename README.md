@@ -7,14 +7,14 @@ Generate multi menu navigasi dengan nama yang unik, dapat ditampilkan dimana saj
 Instalasi
 -------------
 
-#### <i class="icon-file"></i> Install dengan Composer
+#### Install dengan Composer
 
 Cukup sederhana, jalankan perintah berikut.
 
     composer require nurmanhabib/navigator
 
 
-#### <i class="icon-file"></i> Tambahkan Service Provider
+#### Tambahkan Service Provider
 
 Tambahkan `Nurmanhabib\Navigator\NavigatorServiceProvider` ke dalam file di `config/app.php` pada array `providers`.
 
@@ -26,19 +26,7 @@ Tambahkan `Nurmanhabib\Navigator\NavigatorServiceProvider` ke dalam file di `con
     ];
 
 
-#### <i class="icon-file"></i> Tambahkan Service Provider
-
-Tambahkan `Nurmanhabib\Navigator\NavigatorServiceProvider` ke dalam file di `config/app.php` pada array `providers`.
-
-    'providers' = [
-        ...,
-        ...,
-        
-        'Nurmanhabib\Navigator\NavigatorServiceProvider',
-    ];
-
-
-#### <i class="icon-file"></i> Publish Contoh Template
+#### Publish Contoh Template
 
 Navigator mempunyai contoh template `arjuna` dan `sbadmin2` yang akan disalin ke dalam folder `resources/views/vendor/navigator/template`
 
@@ -96,7 +84,7 @@ Selanjutnya, buat sebuah view dengan nama `home.blade.php` tambahkan `Navigator:
 API
 ---
 
-#### <i class="icon-file"></i> Set Item Navigasi
+#### Set Item Navigasi
 
 Menambahkan item menu navigasi. Terdapat 3 parameter.
 
@@ -114,7 +102,7 @@ Contoh penggunaannya adalah sebagai berikut.
 ----------
 
 
-#### <i class="icon-file"></i> Set Child Item Navigasi
+#### Set Child Item Navigasi
 
 Menambahkan item child pada menu navigasi.
 
@@ -130,7 +118,7 @@ Menambahkan item child pada menu navigasi.
 ----------
 
 
-#### <i class="icon-file"></i> Set Active Item Navigasi
+#### Set Active Item Navigasi
 
 Jika Anda sedang mengunjungi `http://example.com/user` maka harapannya pada item yang sudah diinisialisasikan dengan `url('user')` akan terdapat `class="active"` pada element `<li>`. Tambahkan fungsi berikut pada method yang sedang di akses.
 
@@ -156,7 +144,7 @@ Contoh penggunaan adalah sebagai berikut.
 ----------
 
 
-#### <i class="icon-file"></i> Kustomisasi Template
+#### Kustomisasi Template
 
 Navigator ini diusahakan fleksibel terhadap struktur HTML setiap desain template Anda. Anda dapat mengaturnya sendiri. Template ini menggunakan konsep file langsung di dalam folder view. Perlu diperhatikan struktur penamaan file standar.
 
