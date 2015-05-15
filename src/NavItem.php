@@ -6,12 +6,27 @@ class NavItem {
 
     use AttributeTrait;
 
-    protected $collection;
-    protected $attributes;
+    protected $attributes   = [];
 
-    public function __construct($attributes = [])
+    public function __construct($text = null, $url = null, $icon = null)
     {
-        $this->initialize($attributes);
+        $this->set($text, $url, $icon);
+    }
+
+    public function set($text = 'My Link', $url = '#', $icon = 'dashboard')
+    {
+        if (is_array($text)) {
+            $this->initialize($attributes);
+        } else {
+            $this->text   = $text;
+            $this->url    = $url;
+            $this->icon   = $icon;
+        }
+    }
+
+    public function setChild(NavCollection $collection = null)
+    {
+        $this->child = $collection ?: new NavCollection;
     }
 
     public function initialize($attributes = [])
@@ -22,27 +37,7 @@ class NavItem {
             'icon'  => 'dashboard',
         ];
 
-        $this->attributes   = array_merge($this->attributes, $attributes);
-        $this->collection   = new NavCollection;
-    }
-
-    public function instance($attributes)
-    {
-        return new NavItem($attributes);
-    }
-
-    public function set($text, $url = '#', $icon = 'dashboard')
-    {
-        if (is_array($text))
-            $attributes = $text;
-        else
-            $attributes = [
-                'text'  => $text,
-                'url'   => $url,
-                'icon'  => $icon,
-            ];
-
-        return $this->initialize($attributes);
+        $this->attributes = array_merge($this->attributes, $attributes);
     }
 
     public function iconFa($class = '')
@@ -52,33 +47,14 @@ class NavItem {
         return '<i class="fa fa-' . $this->attributes['icon'] . $class . '"></i>';
     }
 
-    public function isActive()
+    public function isActive($url = '')
     {
-        return $this->attr('url') == $this->collection->active;
-    }
-
-    public function child(Closure $callback)
-    {
-        $this->collection->template .= '.child';
-
-        $this->attributes['child'] = $callback($this->collection);
-
-        return $this->collection;
+        return $this->url == $url;
     }
 
     public function hasChild()
     {
         return array_key_exists('child', $this->attributes);
-    }
-
-    public function setCollection(NavCollection $collection)
-    {
-        $this->collection = $collection;
-    }
-
-    public function getCollection()
-    {
-        return $this->collection;
     }
 
     public function __set($key, $value)

@@ -2,12 +2,18 @@
 
 use Illuminate\Support\Facades\Config;
 
+use Closure;
+
 class NavCollection {
 
     use AttributeTrait;
 
     protected $attributes;
     protected $views;
+
+    protected $pointer  = null;
+    protected $parent   = null;
+    protected $child    = null;
 
     public function __construct($items = [], $active = '')
     {
@@ -25,75 +31,62 @@ class NavCollection {
             'child'         => 'child',
             'child_active'  => 'child_active',
         ];
+
+        $this->pointer = $this;
     }
 
-    public function instance($items = [], $active = '')
+    public function set($text, $url, $icon)
     {
-        return new NavCollection($items, $active);
+        if ($this->pointer->child) {
+            $this->pointer->child->set($text, $url, $icon);
+        } else {
+            $this->pointer->attributes['items'][] = new NavItem($text, $url, $icon);
+        }
+
+        return $this;
     }
 
-    public function instanceCopy()
+    public function child(Closure $callback)
     {
-        $instance = $this->instance();
-        $instance->attributes = $this->attributes;
-        $instance->attributes['items'] = [];
+        $this->prepareChild();
 
-        return $instance;
+        call_user_func($callback, $this);
+
+        $this->backToParent();
     }
 
-    public function set($text, $url = '#', $icon = 'dashboard')
+    public function prepareChild()
     {
-        $item = new NavItem;
-        $item->set($text, $url, $icon);
+        $this->pointer->child           = new NavCollection;
+        $this->pointer->child->template = $this->pointer->template . '.child';
+        $this->pointer->child->parent   = $this->pointer;
 
-        return $this->addItem($item);
+        $item           = end($this->pointer->attributes['items']);
+        $item->child    = $this->pointer->child;
+
+        $this->pointer  = $this->pointer->child;
     }
 
-    public function addItem(NavItem $item = null)
+    public function backToParent()
     {
-        $collection = $this->instanceCopy();
-
-        $item = $item ?: new NavItem;
-        $item->setCollection($collection);
-
-        $this->attributes['items'][] = $item;
-
-        return $item;
+        $this->pointer          = $this->pointer->parent;
+        $this->pointer->child   = null;
     }
 
     public function setTemplate($name)
     {
-        $this->attr('template', $name);
+        $this->pointer->template = $name;
 
         return $this;
-    }
-
-    public function setToParentTemplate()
-    {
-        $this->attr('template', $this->getParentTemplate());
-
-        return $this;
-    }
-
-    public function getParentTemplate()
-    {
-        $template   = $this->attr('template');
-        $six_last   = substr($template, -6);
-
-        if ($six_last == '.child')
-            return substr($template, 0, -6);
-            return false;
     }
 
     public function setActive($url)
     {
-        $this->attributes['active'] = $url;
+        $this->active = $url;
 
-        foreach ($this->attributes['items'] as $item) {            
+        foreach ($this->items as $item) {            
             if ($item->hasChild())
-                $item->child->setActive($url);
-            
-            $item->setCollection($this->instanceCopy());
+                $item->child->setActive($url);            
         }
 
         return $this;
@@ -101,13 +94,13 @@ class NavCollection {
 
     public function isActive()
     {
-        $active = $this->attr('active');
+        $active = $this->active;
 
-        foreach ($this->attributes['items'] as $item) {
+        foreach ($this->items as $item) {
             if ($item->hasChild() && $item->child->isActive())
                     return true;
             
-            elseif ($item->isActive())
+            elseif ($item->isActive($active))
                 return true;
         }
 

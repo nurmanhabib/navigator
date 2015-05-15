@@ -24,7 +24,7 @@ class NavigatorRendering {
     private function generateView()
     {
         array_walk($this->views, [$this, 'setFullView']);
-        array_walk($this->views, [$this, 'checkViewExists']); 
+        array_walk($this->views, [$this, 'checkViewExists']);
     }
 
     private function setFullView($name, $key)
@@ -66,12 +66,12 @@ class NavigatorRendering {
         if ($item->hasChild()) {
             $data = array_merge($data, ['child' => $item->child]);
 
-            if ($item->child->isActive())
+            if ($item->child->isActive($active))
                 $view = 'child_active';
             else
                 $view = 'child';
 
-        } elseif ($item->isActive()) {
+        } elseif ($item->isActive($active)) {
 
             $view = 'item_active';
 

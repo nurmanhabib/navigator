@@ -106,12 +106,10 @@ Contoh penggunaannya adalah sebagai berikut.
 
 Menambahkan item child pada menu navigasi.
 
-    Navigator::set('User')->child(function($nav)
+    Navigator::set('User')->child(function()
     {
-        $nav->set('Semua', url('user'), 'users');
-        $nav->set('Baru', url('user/create'), 'plus');
-    
-        return $nav;
+        Navigator::set('Semua', url('user'), 'users');
+        Navigator::set('Baru', url('user/create'), 'plus');
     });
 
 
@@ -140,6 +138,31 @@ Contoh penggunaan adalah sebagai berikut.
     }
         
 
+----------
+
+
+#### Set Multiple Navigator
+
+Bisa jadi di web yang sedang Anda buat memiliki sebuah sidebar di sisi kiri, kemudian navbar di header, ataupun menu lainnya. Semua itu sudah disiapkan di Navigator. Semuanya bisa di set dengan nama yang unik. Untuk membuat nama unik setiap navigator, bisa gunakan fungsi name().
+
+    Navigator::name('navbar-atas');
+    Navigator::set('Home');
+    ...
+
+    Navigator::name('sidebar');
+    Navigator::set('Dashboard');
+    ...
+
+Untuk menampilkan pada view juga mudah.
+
+    <nav class="navbar-nav navbar-default">        
+        {!! Navigator::show('navbar-atas') !!}
+    </nav>
+
+    <div class="sidebar">
+        {!! Navigator::show('sidebar') !!}
+    </div>
+
 
 ----------
 
@@ -159,7 +182,7 @@ Navigator ini diusahakan fleksibel terhadap struktur HTML setiap desain template
                  - `child`.blade.php *- opsional*
                  - `child_active`.blade.php *- opsional*
 
-Folder `mynavigator` sekaligus menjadi nama template yang akan digunakan untuk Navigator. Semua file view harus mempunyai akhiran `.php` atau jika menggunakan Blade menggunakan akhiran `.blade.php`. Untuk set template kustomisasi, gunakan method berikut.
+Folder `template.mynavigator` sekaligus menjadi nama template yang akan digunakan untuk Navigator. Semua file view harus mempunyai akhiran `.php` atau jika menggunakan Blade menggunakan akhiran `.blade.php`. Untuk set template kustomisasi, gunakan method berikut.
 
     Navigator::setTemplate('template.mynavigator');
 
@@ -170,21 +193,22 @@ Selain itu, jika akan membuat template untuk *child*, maka akan membaca folder `
 
  - resources
      - views
-         - **mynavigator**
-             - **child**
+         - **template**
+             - **mynavigator**
                  - **child**
+                     - **child**
+                         - `index`.blade.php
+                         - `item`.blade.php
+                         - ...
                      - `index`.blade.php
                      - `item`.blade.php
                      - ...
                  - `index`.blade.php
                  - `item`.blade.php
-                 - ...
-             - `index`.blade.php
-             - `item`.blade.php
-             - `item_active`.blade.php
-             - `item_disabled`.blade.php
-             - `child`.blade.php
-             - `child_active`.blade.php
+                 - `item_active`.blade.php
+                 - `item_disabled`.blade.php
+                 - `child`.blade.php
+                 - `child_active`.blade.php
 
 
 ----------
@@ -236,14 +260,18 @@ Untuk menampilkan item yang sedang `active`. Sama seperti pada `item.blade.php`,
 
 #### item_disabled.blade.php
 
+Untuk menampilkan item yang sedang `disabled`. Sama seperti pada `item.blade.php`, file ini terdapat variabel yang dapat digunakan, yaitu `$item` untuk mendapatkan atribut dari item.
+
     <li class="disabled">
-    <a href="{{ $item->url }}">{!! $item->icon !!} {{ $item->text }}</a>
+    <a href="{{ $item->url }}">{!! $item->iconFa() !!} {{ $item->text }}</a>
     </li>
 
 
 ----------
 
 #### child.blade.php
+
+Untuk menampilkan item yang mempunyai menu `child`. Sama seperti pada `item.blade.php`, file ini terdapat variabel yang dapat digunakan, yaitu `$item` untuk mendapatkan atribut dari item. Terdapat variabel khusus untuk menampilkan menu `child`, yaitu `$child`. Kustomisasi template `child` ada di dalam folder `child`.
 
     <li class="treeview">
         <a href="">
@@ -259,6 +287,8 @@ Untuk menampilkan item yang sedang `active`. Sama seperti pada `item.blade.php`,
 ----------
 
 #### child_active.blade.php
+
+Untuk menampilkan item yang mempunyai menu `child` yang sedang `active`. Sama seperti pada `item.blade.php`, file ini terdapat variabel yang dapat digunakan, yaitu `$item` untuk mendapatkan atribut dari item. Terdapat variabel khusus untuk menampilkan menu `child`, yaitu `$child`. Kustomisasi template `child` ada di dalam folder `child`.
 
     <li class="treeview active">
         <a href="">
