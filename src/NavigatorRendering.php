@@ -1,6 +1,9 @@
-<?php namespace Nurmanhabib\Navigator;
+<?php
 
-class NavigatorRendering {
+namespace Nurmanhabib\Navigator;
+
+class NavigatorRendering
+{
 
     protected $collection;
     protected $views;

@@ -1,4 +1,6 @@
-<?php namespace Nurmanhabib\Navigator;
+<?php
+
+namespace Nurmanhabib\Navigator;
 
 use Illuminate\Support\Facades\Config;
 

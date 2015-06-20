@@ -1,6 +1,9 @@
-<?php namespace Nurmanhabib\Navigator;
+<?php
 
-class Navigator {
+namespace Nurmanhabib\Navigator;
+
+class Navigator
+{
 
     protected $app;
     protected $config;

@@ -1,9 +1,15 @@
-<?php namespace Nurmanhabib\Navigator\Facades;
+<?php
+
+namespace Nurmanhabib\Navigator\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Navigator extends Facade {
+class Navigator extends Facade
+{
 
-    protected static function getFacadeAccessor() { return 'navigator'; }
+    protected static function getFacadeAccessor()
+    {
+        return 'navigator';
+    }
 
 }
