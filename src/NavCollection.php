@@ -3,10 +3,10 @@
 namespace Nurmanhabib\Navigator;
 
 use Illuminate\Support\Facades\Config;
-
 use Closure;
 
-class NavCollection {
+class NavCollection
+{
 
     use AttributeTrait;
 

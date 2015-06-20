@@ -9,10 +9,17 @@ Instalasi
 
 #### Install dengan Composer
 
-Cukup sederhana, jalankan perintah berikut.
+Cukup sederhana, jalankan perintah berikut untuk mendapatkan versi terbaru.
 
     composer require nurmanhabib/navigator
 
+Untuk Laravel 5.0
+
+    composer require nurmanhabib/navigator:~3.0
+
+Untuk Laravel 4.2
+
+    composer require nurmanhabib/navigator:~2.0
 
 #### Tambahkan Service Provider
 
@@ -299,3 +306,4 @@ Untuk menampilkan item yang mempunyai menu `child` yang sedang `active`. Sama se
         {!! $child !!}
 
     </li>
+
