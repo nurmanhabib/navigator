@@ -1,10 +1,12 @@
-<?php namespace Nurmanhabib\Navigator;
+<?php
+
+namespace Nurmanhabib\Navigator;
 
 use Illuminate\Support\Facades\Config;
-
 use Closure;
 
-class NavCollection {
+class NavCollection
+{
 
     use AttributeTrait;
 
@@ -77,17 +79,20 @@ class NavCollection {
     {
         $this->pointer->template = $name;
 
+        foreach ($this->pointer->items as $item)
+            if ($item->hasChild())
+                $item->child->setTemplate($name . '.child');
+
         return $this;
     }
 
     public function setActive($url)
     {
-        $this->active = $url;
+        $this->pointer->active = $url;
 
-        foreach ($this->items as $item) {            
+        foreach ($this->pointer->items as $item)
             if ($item->hasChild())
-                $item->child->setActive($url);            
-        }
+                $item->child->setActive($url);
 
         return $this;
     }
@@ -97,7 +102,7 @@ class NavCollection {
         $active = $this->active;
 
         foreach ($this->items as $item) {
-            if ($item->hasChild() && $item->child->isActive())
+            if ($item->hasChild() && $item->child->isActive($active))
                     return true;
             
             elseif ($item->isActive($active))

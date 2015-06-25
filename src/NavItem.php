@@ -1,8 +1,11 @@
-<?php namespace Nurmanhabib\Navigator;
+<?php
+
+namespace Nurmanhabib\Navigator;
 
 use Closure;
 
-class NavItem {
+class NavItem
+{
 
     use AttributeTrait;
 

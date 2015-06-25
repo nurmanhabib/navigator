@@ -1,8 +1,11 @@
-<?php namespace Nurmanhabib\Navigator;
+<?php
+
+namespace Nurmanhabib\Navigator;
 
 use Illuminate\Support\ServiceProvider;
 
-class NavigatorServiceProvider extends ServiceProvider {
+class NavigatorServiceProvider extends ServiceProvider
+{
 
 	/**
 	 * Indicates if loading of the provider is deferred.

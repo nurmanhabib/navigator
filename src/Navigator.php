@@ -1,6 +1,9 @@
-<?php namespace Nurmanhabib\Navigator;
+<?php
 
-class Navigator {
+namespace Nurmanhabib\Navigator;
+
+class Navigator
+{
 
     protected $app;
     protected $config;
@@ -59,6 +62,7 @@ class Navigator {
 
     public function setActive($url)
     {
+        $this->active = $url;
         $this->collections[$this->name]->setActive($url);
     }
 
