@@ -55,15 +55,15 @@ class Navigator
     {
         $this->name = $name;
         $collection = $collection ?: array_get($this->collections, $name, new NavCollection);
-        $collection->setActive($this->active);
 
         return $collection;
     }
 
     public function setActive($url)
     {
-        $this->active = $url;
         $this->collections[$this->name]->setActive($url);
+
+        return $this;
     }
 
     public function setTemplate($name)
