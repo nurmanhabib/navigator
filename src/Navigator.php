@@ -1,6 +1,8 @@
 <?php
 namespace Nurmanhabib\Navigator;
 
+use Config;
+
 class Navigator {
 
     public $nav             = array();
@@ -88,8 +90,8 @@ class Navigator {
 
     // template
     public function templateSbadmin()
-    {
-        $options    = array(
+    {      
+        $options        = array(
             'ulattr'            => array('class' => 'nav', 'id' => 'side-menu'),
             'liactive'          => '',
             'active_element'    => array('a' => array('class' => 'active')),
