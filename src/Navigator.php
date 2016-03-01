@@ -1,186 +1,90 @@
 <?php
+
 namespace Nurmanhabib\Navigator;
 
-use Config;
+class Navigator
+{
+    protected $app;
+    protected $config;
 
-class Navigator {
+    protected $name;
+    protected $collections;
+    protected $active;
 
-    public $nav             = array();
-    public $ulattr          = array('class' => 'nav navbar-nav navbar-right');
-    public $liattr          = array('class' => '');
-    public $liactive        = 'active';
-
-    public $liparent_attr   = array('class' => 'parent');
-    public $liparent_icon   = '<i class="fa fa-angle-left pull-right"></i>';
-    public $liparent_active = 'active';
-
-    public $active_element  = array('li' => array(), 'a' => array());
-
-    public $child           = array();
-    public $active          = '';
-
-    public function __construct($navs = array(), $options = array(), $active = '')
+    public function __construct($app)
     {
-        $this->initialize($navs, $options, $active);
+        $this->app          = $app;
+        $this->config       = $app->config;
+
+        $this->name         = 'default';
+        $this->collections  = ['default' => new NavCollection];
+        $this->active       = $this->app->url->full();
     }
 
-    public function initialize($navs = array(), $options = array(), $active = '')
+    public function set($text, $url = '#', $icon = 'dashboard')
     {
-        $this->nav      = $navs;
-        $this->active   = $active;
-
-        if(is_array($options)) {
-            $this->set_options($options);
-        } else {
-            $func_name  = ucfirst($options);
-
-            call_user_func(array(__CLASS__, 'template' . $func_name));
-        }
+        return $this->collections[$this->name]->set($text, $url, $icon);
     }
 
-    public function set_options($options)
+    public function current()
     {
-        if(array_key_exists('ulattr', $options))
-            $this->ulattr   = $options['ulattr'];
+        $name       = $this->name;
+        $current    = array_get($this->collections, $name, new NavCollection);
 
-        if(array_key_exists('liattr', $options))
-            $this->liattr   = $options['liattr'];
-        
-        if(array_key_exists('liactive', $options))
-            $this->liactive = $options['liactive'];
-        
-        if(array_key_exists('active_element', $options))
-            $this->active_element   = $options['active_element'];
-        
-        if(array_key_exists('liparent_attr', $options))
-            $this->liparent_attr    = $options['liparent_attr'];
-        
-        if(array_key_exists('liparent_icon', $options))
-            $this->liparent_icon    = $options['liparent_icon'];
-        
-        if(array_key_exists('liparent_active', $options))
-            $this->liparent_active  = $options['liparent_active'];
-        
-        if(array_key_exists('child', $options))
-            $this->child            = $options['child'];
+        return $current;
     }
 
-    public function set($navs)
+    public function show($name = '')
     {
-        $this->nav  = $navs;
+        if ($name) $this->setCurrent($name);
+
+        return $this->collections[$this->name];
     }
 
-    public function add($navs)
+    public function name($name)
     {
-        $this->nav  += $navs;
+        if (!array_key_exists($name, $this->collections))
+            $this->collections[$name] = new NavCollection;
+            $this->setCurrent($name);
+
+            return $this;
     }
 
-    public function set_active($link)
+    public function setCurrent($name, NavCollection $collection = null)
     {
-        $this->active   = $link;
+        $this->name = $name;
+        $collection = $collection ?: array_get($this->collections, $name, new NavCollection);
+
+        return $collection;
     }
 
-    public function is_parent($active, $nav)
+    public function setActive($url)
     {
-        foreach ($nav as $link)
-            if($link == $active)
-                return true;
-                return false;
-    }
-
-    // template
-    public function templateSbadmin()
-    {      
-        $options        = array(
-            'ulattr'            => array('class' => 'nav', 'id' => 'side-menu'),
-            'liactive'          => '',
-            'active_element'    => array('a' => array('class' => 'active')),
-            'liparent_attr'     => array('class' => ''),
-            'child'             => array(
-                'ulattr'        => array('class' => 'nav nav-second-level collapse'),
-                'liactive'      => 'active'
-            )
-        );
-
-        $this->set_options($options);
+        $this->collections[$this->name]->setActive($url);
 
         return $this;
     }
 
-    private function generate_attr($attributes, $first_spacing = true)
+    public function setTemplate($name)
     {
-        $html   = '';
-
-        foreach ($attributes as $attribute => $value)
-        {
-            if($html != '' || $first_spacing)
-                $html   .= ' ';
-                $html   .= $attribute . '="';
-
-                if(!is_array($value))
-                    $html   .= $value;
-
-                $html   .= '"';
-        }
-
-        return $html;
+        $this->collections[$this->name]->setTemplate($name);
     }
 
-    public function generate($nav)
+    public function __set($name, NavCollection $collection)
     {
-        // Awalan
-        $html   = '<ul' . $this->generate_attr($this->ulattr) . '>';
-
-        // Listing
-        foreach ($nav as $text => $link)
-        {
-            if(is_array($link))
-            {
-                // Dengan sub-listing               
-                $navchild   = new Navigator($link, $this->child, $this->active);
-
-                if($this->is_parent($this->active, $link))
-                    $this->liparent_attr['class']   .= ' ' . $this->liparent_active;
-                else
-                    $this->liparent_attr['class']   = str_replace(' ' . $this->liparent_active, '', $this->liparent_attr['class']);
-
-                $html   .= '<li' . $this->generate_attr($this->liparent_attr) . '>';            
-                $html   .= '<a href="#">' . $text . $this->liparent_icon . '</a>';
-                $html   .= $navchild->links();
-                $html   .= '</li>';
-            }
-            else
-            {
-                // Tanpa sub-listing
-                if($this->active == $link) {
-
-                    $this->liattr['class']  .= ' ' . $this->liactive;
-
-                    $html   .= '<li' . $this->generate_attr($this->liattr) . '>';
-                    $html   .= '<a href="' . $link . '" ' . $this->generate_attr($this->active_element['a']) . '>' . $text . '</a>';
-                    $html   .= '</li>';
-
-                } else {
-
-                    $this->liattr['class']  = str_replace(' ' . $this->liactive, '', $this->liattr['class']);
-
-                    $html   .= '<li' . $this->generate_attr($this->liattr) . '>';
-                    $html   .= '<a href="' . $link . '">' . $text . '</a>';
-                    $html   .= '</li>';
-
-                }
-            }
-        }
-
-        // Akhiran
-        $html   .= '</ul>';
-
-        return $html;
+        $this->collections[$name]   = $collection;
+        $this->setCurrent($name, $collection);
     }
 
-    public function links()
+    public function __get($name)
     {
-        return $this->generate($this->nav);
+        $collection = array_key_exists($name, $this->collections) ? $this->collections[$name] : new NavCollection;
+        
+        return $collection;
     }
-
+    
+    public function __toString()
+    {
+        return (string) $this->current['nav'];
+    }
 }

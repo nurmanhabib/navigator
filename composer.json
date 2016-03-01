@@ -1,22 +1,22 @@
 {
     "name": "nurmanhabib/navigator",
-    "description": "Generate navigasi dengan tampilan bootstrap untuk Laravel",
+    "description": "Generate multi menu navigasi dengan nama yang unik, dapat ditampilkan dimana saja. Custom templating. Support Laravel 5.1.",
     "license": "MIT",
-    "keywords": ["navigation","navigator"],
+    "keywords": ["navigation", "navigator", "menu", "sidebar", "navbar", "bootstrap", "bootstrap3", "laravel", "laravel5", "generator", "sbadmin", "treeview"],
     "authors": [
         {
             "name": "Habib Nurrahman",
-            "email": "nurmanhabib@gmail.com",
-            "homepage": "http://habibnurrahman.com",
-            "role": "Developer"
+            "email": "nurmanhabib@yahoo.co.id"
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.5.9",
+        "illuminate/support": "5.1.*"
     },
     "autoload": {
         "psr-4": {
             "Nurmanhabib\\Navigator\\": "src/"
         }
-    }
+    },
+    "minimum-stability": "stable"
 }
