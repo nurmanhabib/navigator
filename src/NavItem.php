@@ -2,82 +2,74 @@
 
 namespace Nurmanhabib\Navigator;
 
-use Closure;
-
 class NavItem
 {
+    public $text;
+    public $url;
+    public $child;
+    public $icon;
 
-    use AttributeTrait;
+    protected $originalURL;
+    protected $active;
+    protected $visible = true;
 
-    protected $attributes   = [];
-
-    public function __construct($text = null, $url = null, $icon = null)
+    public function __construct($text, $url, $icon = null, $active = false)
     {
-        $this->set($text, $url, $icon);
+        $this->text = $text;
+        $this->url = $this->originalURL = $url;
+        $this->child = new NavCollection;
+
+        $this->icon = $icon;
+        $this->active = $active;
     }
 
-    public function set($text = 'My Link', $url = '#', $icon = 'dashboard')
+    public function setPrefix($prefix)
     {
-        if (is_array($text)) {
-            $this->initialize($attributes);
-        } else {
-            $this->text   = $text;
-            $this->url    = $url;
-            $this->icon   = $icon;
+        if (!str_contains($this->url, '://')) {
+            $this->url = ($prefix ? rtrim($prefix, '/') : '') . ltrim($this->originalURL, '/');
         }
-    }
-
-    public function setChild(NavCollection $collection = null)
-    {
-        $this->child = $collection ?: new NavCollection;
-    }
-
-    public function initialize($attributes = [])
-    {
-        $this->attributes = [
-            'text'  => 'My Link',
-            'url'   => '#',
-            'icon'  => 'dashboard',
-        ];
-
-        $this->attributes = array_merge($this->attributes, $attributes);
-    }
-
-    public function iconFa($class = '')
-    {
-        $class = $class ? ' ' . trim($class) : '';
-
-        return '<i class="fa fa-' . $this->attributes['icon'] . $class . '"></i>';
-    }
-
-    public function isActive($url = '')
-    {
-        return $this->url == $url;
     }
 
     public function hasChild()
     {
-        return array_key_exists('child', $this->attributes);
+        return !$this->child->isEmpty();
     }
 
-    public function __set($key, $value)
+    public function setChild(NavCollection $child)
     {
-        $this->attributes[$key] = $value;
+        $this->child = $child;
     }
 
-    public function __get($key)
+    public function setActive($active = true)
     {
-        return array_get($this->attributes, $key);
+        $this->active = $active;
+    }
+
+    public function setVisible($visible = true)
+    {
+        $this->visible = $visible;
+    }
+
+    public function isActive()
+    {
+        return (bool) $this->active;
+    }
+
+    public function isVisible()
+    {
+        return (bool) $this->visible;
     }
 
     public function toArray()
     {
-        $array = $this->attributes;
-
-        if (array_key_exists('child', $array))
-            $array['child'] = $this->attributes['child']->toArray();
-
-        return $array;
+        return [
+            'text' => $this->text,
+            'url' => $this->url,
+            'icon' => $this->icon,
+            'active' => $this->isActive(),
+            'visible' => $this->isVisible(),
+            'child' => $this->child->toArray(),
+        ];
     }
 
     public function __toString()

@@ -2,147 +2,153 @@
 
 namespace Nurmanhabib\Navigator;
 
-use Illuminate\Support\Facades\Config;
-use Closure;
+use Illuminate\Support\Collection;
 
 class NavCollection
 {
+    /**
+     * @var Collection
+     */
+    protected $items;
 
-    use AttributeTrait;
+    /**
+     * @var string
+     */
+    protected $prefix = '';
 
-    protected $attributes;
-    protected $views;
+    /**
+     * @var string
+     */
+    protected $rootPrefix = '';
 
-    protected $pointer  = null;
-    protected $parent   = null;
-    protected $child    = null;
+    /**
+     * @var NavActivator
+     */
+    protected $activator;
 
-    public function __construct($items = [], $active = '')
+    /**
+     * @var bool
+     */
+    protected $activeInDepth = false;
+
+    public function __construct()
     {
-        $this->attributes = [
-            'items'    => $items,
-            'active'   => $active,
-            'template' => 'navigator::template.sbadmin2',
-        ];
-
-        $this->views = [
-            'index'         => 'index',
-            'item'          => 'item',
-            'item_active'   => 'item_active',
-            'item_disabled' => 'item_disabled',
-            'child'         => 'child',
-            'child_active'  => 'child_active',
-        ];
-
-        $this->pointer = $this;
+        $this->items = new Collection;
     }
 
-    public function set($text, $url, $icon)
+    public function add(NavItem $item, NavCollection $child = null)
     {
-        if ($this->pointer->child) {
-            $this->pointer->child->set($text, $url, $icon);
-        } else {
-            $this->pointer->attributes['items'][] = new NavItem($text, $url, $icon);
+        if ($this->prefix) {
+            $item->setPrefix($this->prefix);
         }
 
-        return $this;
+        if ($child) {
+            $child->rootPrefix($this->prefix);
+            $child->applyPrefix();
+
+            $item->setChild($child);
+        }
+
+        $this->items->push($item);
+
+        return $item;
     }
 
-    public function child(Closure $callback)
+    public function rootPrefix($rootPrefix = '')
     {
-        $this->prepareChild();
+        $this->rootPrefix = $rootPrefix;
 
-        call_user_func($callback, $this);
-
-        $this->backToParent();
+        $this->prefix($this->prefix);
     }
 
-    public function prepareChild()
+    public function prefix($prefix = '')
     {
-        $this->pointer->child           = new NavCollection;
-        $this->pointer->child->template = $this->pointer->template . '.child';
-        $this->pointer->child->parent   = $this->pointer;
+        $stacks = [
+            rtrim($this->rootPrefix, '/'),
+            ltrim($prefix, '/'),
+        ];
 
-        $item           = end($this->pointer->attributes['items']);
-        $item->child    = $this->pointer->child;
+        $this->prefix = implode('/', array_filter($stacks, function ($stack) {
+            return !empty($stack);
+        }));
 
-        $this->pointer  = $this->pointer->child;
-    }
-
-    public function backToParent()
-    {
-        $this->pointer          = $this->pointer->parent;
-        $this->pointer->child   = null;
-    }
-
-    public function setTemplate($name)
-    {
-        $this->pointer->template = $name;
-
-        foreach ($this->pointer->items as $item)
-            if ($item->hasChild())
-                $item->child->setTemplate($name . '.child');
-
-        return $this;
+        $this->applyPrefix();
     }
 
     public function setActive($url)
     {
-        $this->pointer->active = $url;
-
-        foreach ($this->pointer->items as $item)
-            if ($item->hasChild())
-                $item->child->setActive($url);
-
-        return $this;
+        $this->setActivator(new NavActivator([$url]));
     }
 
-    public function isActive()
+    public function setActivator(NavActivator $activator)
     {
-        $active = $this->active;
+        $this->activator = $activator;
 
-        foreach ($this->items as $item) {
-            if ($item->hasChild() && $item->child->isActive($active))
-                    return true;
-            
-            elseif ($item->isActive($active))
-                return true;
+        $this->applyActivator();
+    }
+
+    public function hasActive()
+    {
+        return $this->items->first(function (NavItem $item) {
+            return $item->isActive();
+        });
+    }
+
+    protected function applyPrefix()
+    {
+        $this->items->each(function (NavItem $item) {
+            $item->setPrefix($this->prefix);
+            $this->setChildRootPrefix($item);
+        });
+    }
+
+    protected function setChildRootPrefix(NavItem $item)
+    {
+        if ($item->hasChild()) {
+            $item->child->rootPrefix($this->prefix);
         }
-
-        return false;
     }
 
-    public function render()
+    protected function applyActivator()
     {
-        $rendering = new NavigatorRendering($this);
-
-        return $rendering->render();
+        $this->items->each(function (NavItem $item) {
+            $this->checkActiveItem($item);
+        });
     }
 
-    public function __set($key, $value)
+    protected function checkActiveItem(NavItem $item)
     {
-        $this->attributes[$key] = $value;
+        if ($this->activator->isActive($item)) {
+            $item->setActive();
+        }
     }
 
-    public function __get($key)
+    public function isEmpty()
     {
-        return array_get($this->attributes, $key);
+        return $this->items->isEmpty();
+    }
+
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    public function render(NavRender $render)
+    {
+        return $render->render($this);
     }
 
     public function toArray()
     {
-        $array          = $this->attributes;
-        $array['items'] = [];
-
-        foreach ($this->attributes['items'] as $item)
-            $array['items'][] = $item->toArray();
-
-        return $array;
+        return $this->items->map(function (NavItem $item) {
+            return $item->toArray();
+        });
     }
 
     public function __toString()
     {
-        return $this->render();
+        return json_encode($this->toArray());
     }
+
 
 }
