@@ -32,8 +32,8 @@ class NavActivator
 
     public function fromRequest(Request $request)
     {
-        $this->request = $request;
         $this->fromURL($request->fullUrl());
+        $this->request = $request;
     }
 
     public function fromURLs(array $activeURLs)

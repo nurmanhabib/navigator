@@ -118,9 +118,7 @@ class NavCollection
 
     protected function checkActiveItem(NavItem $item)
     {
-        if ($this->activator->isActive($item)) {
-            $item->setActive();
-        }
+        $item->setActive($active = $this->activator->isActive($item));
     }
 
     public function isEmpty()
