@@ -2,123 +2,56 @@
 
 namespace Nurmanhabib\Navigator;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
+use Nurmanhabib\Navigator\Items\Nav;
+use Nurmanhabib\Navigator\Modifiers\NavModifier;
 
-class NavCollection
+class NavCollection implements Arrayable, Jsonable
 {
     /**
+     * Items of nav links
+     *
      * @var Collection
      */
     protected $items;
-
-    /**
-     * @var string
-     */
-    protected $prefix = '';
-
-    /**
-     * @var string
-     */
-    protected $rootPrefix = '';
-
-    /**
-     * @var NavActivator
-     */
-    protected $activator;
-
-    /**
-     * @var bool
-     */
-    protected $activeInDepth = false;
 
     public function __construct()
     {
         $this->items = new Collection;
     }
 
-    public function add(NavItem $item, NavCollection $child = null)
+    public function add(Nav $item)
     {
-        if ($this->prefix) {
-            $item->setPrefix($this->prefix);
-        }
-
-        if ($child) {
-            $child->rootPrefix($this->prefix);
-            $child->applyPrefix();
-
-            $item->setChild($child);
-        }
-
         $this->items->push($item);
 
         return $item;
     }
 
-    public function rootPrefix($rootPrefix = '')
+    public function modify(NavModifier $modifier)
     {
-        $this->rootPrefix = $rootPrefix;
-
-        $this->prefix($this->prefix);
-    }
-
-    public function prefix($prefix = '')
-    {
-        $stacks = [
-            rtrim($this->rootPrefix, '/'),
-            ltrim($prefix, '/'),
-        ];
-
-        $this->prefix = implode('/', array_filter($stacks, function ($stack) {
-            return !empty($stack);
-        }));
-
-        $this->applyPrefix();
-    }
-
-    public function setActive($url)
-    {
-        $this->setActivator(new NavActivator([$url]));
-    }
-
-    public function setActivator(NavActivator $activator)
-    {
-        $this->activator = $activator;
-
-        $this->applyActivator();
-    }
-
-    public function hasActive()
-    {
-        return $this->items->first(function (NavItem $item) {
-            return $item->isActive();
+        return $this->each(function (Nav $item) use ($modifier) {
+            return $modifier->modify($item);
         });
     }
 
-    protected function applyPrefix()
+    public function each(callable $callable)
     {
-        $this->items->each(function (NavItem $item) {
-            $item->setPrefix($this->prefix);
-            $this->setChildRootPrefix($item);
+        $this->items->map($callable);
+
+        $this->items->each(function (Nav $item) use ($callable) {
+            $this->eachChild($item, $callable);
         });
+
+        return $this;
     }
 
-    protected function setChildRootPrefix(NavItem $item)
+    private function eachChild(Nav $item, callable $callable)
     {
         if ($item->hasChild()) {
-            $item->child->rootPrefix($this->prefix);
+            $item->child->each($callable);
         }
-    }
-
-    protected function applyActivator()
-    {
-        $this->items->each(function (NavItem $item) {
-            $this->checkActiveItem($item);
-        });
-    }
-
-    protected function checkActiveItem(NavItem $item)
-    {
-        $item->setActive($active = $this->activator->isActive($item));
     }
 
     public function isEmpty()
@@ -126,27 +59,36 @@ class NavCollection
         return $this->items->isEmpty();
     }
 
+    public function isNotEmpty()
+    {
+        return $this->items->isNotEmpty();
+    }
+
     public function getItems()
     {
         return $this->items;
     }
 
-    public function render(NavRender $render)
+    /**
+     * Convert the object to its JSON representation.
+     *
+     * @param  int $options
+     * @return string
+     */
+    public function toJson($options = 0)
     {
-        return $render->render($this);
+        return json_encode($this->toArray(), $options);
     }
 
+    /**
+     * Get the instance as an array.
+     *
+     * @return array
+     */
     public function toArray()
     {
-        return $this->items->map(function (NavItem $item) {
+        return $this->items->map(function (Nav $item) {
             return $item->toArray();
-        });
+        })->toArray();
     }
-
-    public function __toString()
-    {
-        return json_encode($this->toArray());
-    }
-
-
 }

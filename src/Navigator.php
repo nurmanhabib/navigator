@@ -3,6 +3,7 @@
 namespace Nurmanhabib\Navigator;
 
 use Illuminate\Http\Request;
+use Nurmanhabib\Navigator\Items\NavLink;
 
 class Navigator
 {
@@ -58,12 +59,12 @@ class Navigator
 
     public static function link($text, $url, $icon = null)
     {
-        return self::add(new NavItem($text, $url, $icon));
+        return self::add(new NavLink($text, $url, $icon));
     }
 
     public static function child($text, \Closure $callback, $icon = null, $url = '#')
     {
-        $parent = new NavItem($text, $url, $icon);
+        $parent = new NavLink($text, $url, $icon);
         $child = self::$childNavigatorStack[] = new NavCollection;
 
         $callback($child, $parent);
@@ -73,7 +74,7 @@ class Navigator
         return self::add($parent, $child);
     }
 
-    public static function add(NavItem $item, NavCollection $child = null)
+    public static function add(NavLink $item, NavCollection $child = null)
     {
         $currentNavigator = self::getLastChildStack() ?: self::$currentNavigator;
 
