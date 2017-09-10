@@ -42,6 +42,11 @@ class NavSeparator implements Nav
         return new NavCollection;
     }
 
+    public function setChild(NavCollection $child)
+    {
+        throw new NavChildException($this);
+    }
+
     public function add(Nav $nav)
     {
         throw new NavChildException($this);

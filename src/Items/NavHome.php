@@ -8,4 +8,9 @@ class NavHome extends NavLink
     {
         parent::__construct($text, $url, $icon);
     }
+
+    public function getType()
+    {
+        return 'home';
+    }
 }

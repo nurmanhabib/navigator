@@ -3,6 +3,7 @@
 namespace Nurmanhabib\Navigator\Modifiers;
 
 use Nurmanhabib\Navigator\Items\Nav;
+use Nurmanhabib\Navigator\NavCollection;
 
 abstract class NavModifier implements Nav
 {
@@ -56,6 +57,11 @@ abstract class NavModifier implements Nav
         return $this->nav->getChild();
     }
 
+    public function setChild(NavCollection $child)
+    {
+        return $this->nav->setChild($child);
+    }
+
     public function add(Nav $nav)
     {
         return $this->nav->add($nav);
@@ -68,15 +74,6 @@ abstract class NavModifier implements Nav
 
     public function toArray()
     {
-        return [
-            'text' => $this->getText(),
-            'url' => $this->getUrl(),
-            'icon' => $this->getIcon(),
-            'type' => $this->getType(),
-            'is_active' => $this->isActive(),
-            'is_visible' => $this->isVisible(),
-            'has_child' => $this->hasChild(),
-            'child' => $this->getChild()->toArray(),
-        ];
+        return $this->nav->toArray();
     }
 }

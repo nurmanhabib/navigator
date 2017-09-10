@@ -1,9 +1,8 @@
 <?php
 
-namespace Nurmanhabib\Navigator\NavRender;
+namespace Nurmanhabib\Navigator\Renders;
 
 use Nurmanhabib\Navigator\NavCollection;
-use Nurmanhabib\Navigator\NavRender;
 
 class NavSimple implements NavRender
 {

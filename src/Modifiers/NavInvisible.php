@@ -2,7 +2,7 @@
 
 namespace Nurmanhabib\Navigator\Modifiers;
 
-class NavInvisible extends NavModifier
+class NavInvisible extends NavVisible
 {
     public function isVisible()
     {

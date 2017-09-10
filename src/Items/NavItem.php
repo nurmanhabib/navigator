@@ -65,6 +65,11 @@ abstract class NavItem implements Nav, Arrayable, Jsonable
         return new NavCollection;
     }
 
+    public function setChild(NavCollection $child)
+    {
+        throw new NavChildException($this);
+    }
+
     public function add(Nav $item)
     {
         throw new NavChildException($this);

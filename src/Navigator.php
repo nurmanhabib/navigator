@@ -2,133 +2,90 @@
 
 namespace Nurmanhabib\Navigator;
 
-use Illuminate\Http\Request;
-use Nurmanhabib\Navigator\Items\NavLink;
+use Nurmanhabib\Navigator\Activators\NavActivator;
+use Nurmanhabib\Navigator\Activators\NoneActivator;
+use Nurmanhabib\Navigator\Items\Nav;
+use Nurmanhabib\Navigator\Modifiers\NavActive;
+use Nurmanhabib\Navigator\Renders\NavRender;
+use Nurmanhabib\Navigator\Renders\NavSimple;
 
 class Navigator
 {
     /**
-     * @var array
-     */
-    protected static $navigators;
-
-    /**
      * @var NavCollection
      */
-    protected static $currentNavigator;
-
-    /**
-     * @var array
-     */
-    protected static $childNavigatorStack = [];
+    protected $menu;
 
     /**
      * @var NavActivator
      */
-    protected static $globalActivator;
+    protected $activator;
 
     /**
-     * @param $name
-     * @param \Closure $callback
+     * @var NavRender
      */
-    public static function make($name, \Closure $callback)
-    {
-        self::$currentNavigator = self::$navigators[$name] = new NavCollection;
-
-        if ($activator = self::$globalActivator) {
-            self::$currentNavigator->setActivator($activator);
-        }
-
-        $callback(self::$currentNavigator);
-    }
+    protected $render;
 
     /**
-     * @param $name
-     * @param \Closure|null $callback
-     *
-     * @return NavCollection|null
+     * Navigator constructor.
+     * @param NavCollection $menu
      */
-    public static function get($name = 'default', \Closure $callback = null)
+    public function __construct(NavCollection $menu)
     {
-        if (is_null($callback)) {
-            return self::$navigators[$name];
-        }
-
-        $callback(self::$currentNavigator = self::$navigators[$name]);
+        $this->menu = $menu;
+        $this->activator = new NoneActivator;
+        $this->render = new NavSimple;
     }
 
-    public static function link($text, $url, $icon = null)
+    public function map(callable $callback)
     {
-        return self::add(new NavLink($text, $url, $icon));
+        return new static($this->menu->map($callback));
     }
 
-    public static function child($text, \Closure $callback, $icon = null, $url = '#')
+    public function transform(callable $callback)
     {
-        $parent = new NavLink($text, $url, $icon);
-        $child = self::$childNavigatorStack[] = new NavCollection;
+        $this->menu->transform($callback);
 
-        $callback($child, $parent);
-
-        array_pop(self::$childNavigatorStack);
-
-        return self::add($parent, $child);
+        return $this;
     }
 
-    public static function add(NavLink $item, NavCollection $child = null)
+    public function setActivator(NavActivator $activator)
     {
-        $currentNavigator = self::getLastChildStack() ?: self::$currentNavigator;
+        $this->activator = $activator;
 
-        if (!$currentNavigator) {
-            $currentNavigator = self::$currentNavigator = self::$navigators['default'] = new NavCollection;
-        }
-
-        return $currentNavigator->add($item, $child);
+        return $this;
     }
 
-    protected static function getLastChildStack()
+    public function setRender(NavRender $render)
     {
-        return end(self::$childNavigatorStack);
+        $this->render = $render;
+
+        return $this;
     }
 
-    public static function setActive($url)
+    public function applyActivator()
     {
-        $activator = self::$globalActivator ?: new NavActivator;
-        $activator->fromURL($url);
+        $this->transform(function (Nav $nav) {
+            if ($this->activator->isActive($nav)) {
+                return new NavActive($nav);
+            }
 
-        self::setActivator($activator);
+            return $nav;
+        });
     }
 
-    public static function setActiveFromRequest(Request $request = null)
+    public function render()
     {
-        $activator = self::$globalActivator ?: new NavActivator;
-        $activator->fromRequest($request ?: request());
-
-        self::setActivator($activator);
+        return $this->render->render($this->menu);
     }
 
-    public static function setActivator(NavActivator $activator)
+    public function toArray()
     {
-        self::$globalActivator = $activator;
-
-        foreach (self::$navigators as $name => $navigator) {
-            $navigator->setActivator($activator);
-        }
+        return $this->menu->toArray();
     }
 
-    public static function toArray()
+    public function toJson($options = 0)
     {
-        return array_map(function (NavCollection $navigator) {
-            return $navigator->toArray();
-        }, self::$navigators);
-    }
-
-    public static function toJson($options = 0)
-    {
-        return json_encode(self::toArray(), $options);
-    }
-
-    public static function all()
-    {
-        return self::$navigators;
+        return $this->menu->toJson($options);
     }
 }

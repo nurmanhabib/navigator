@@ -6,7 +6,11 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Nurmanhabib\Navigator\Items\Nav;
-use Nurmanhabib\Navigator\Modifiers\NavModifier;
+use Nurmanhabib\Navigator\Items\NavHeading;
+use Nurmanhabib\Navigator\Items\NavHome;
+use Nurmanhabib\Navigator\Items\NavLink;
+use Nurmanhabib\Navigator\Items\NavParent;
+use Nurmanhabib\Navigator\Items\NavSeparator;
 
 class NavCollection implements Arrayable, Jsonable
 {
@@ -17,9 +21,46 @@ class NavCollection implements Arrayable, Jsonable
      */
     protected $items;
 
-    public function __construct()
+    public function __construct(array $items = [])
     {
         $this->items = new Collection;
+
+        foreach ($items as $item) {
+            $this->add($item);
+        }
+    }
+
+    public function addLink($text, $url = '#', $icon = null)
+    {
+        return $this->add(new NavLink($text, $url, $icon));
+    }
+
+    public function addHeading($text)
+    {
+        return $this->add(new NavHeading($text));
+    }
+
+    public function addHome($text = 'Home', $url = '/', $icon = 'home')
+    {
+        return $this->add(new NavHome($text, $url, $icon));
+    }
+
+    public function addSeparator()
+    {
+        return $this->add(new NavSeparator);
+    }
+
+    public function addParent($text, callable $callback, $icon = null, $url = '#')
+    {
+        $parent = $this->add(new NavParent($text, $url, $icon));
+
+        $callback($child = new self);
+
+        $child->items->each(function (Nav $nav) use ($parent) {
+            $parent->add($nav);
+        });
+
+        return $parent;
     }
 
     public function add(Nav $item)
@@ -29,29 +70,42 @@ class NavCollection implements Arrayable, Jsonable
         return $item;
     }
 
-    public function modify(NavModifier $modifier)
+    public function map(callable $callback)
     {
-        return $this->each(function (Nav $item) use ($modifier) {
-            return $modifier->modify($item);
+        $items = $this->items->map(function (Nav $nav) use ($callback) {
+            return $this->mapNav($nav, $callback);
         });
+
+        return new static($items->toArray());
     }
 
-    public function each(callable $callable)
+    protected function mapNav(Nav $nav, callable $callback)
     {
-        $this->items->map($callable);
+        $nav = clone $nav;
 
-        $this->items->each(function (Nav $item) use ($callable) {
-            $this->eachChild($item, $callable);
+        if ($nav->hasChild()) {
+            $nav->setChild($nav->getChild()->map($callback));
+        }
+
+        return $callback($nav);
+    }
+
+    public function transform(callable $callback)
+    {
+        $this->items->transform(function (Nav $nav) use ($callback) {
+            return $this->transformNav($nav, $callback);
         });
 
         return $this;
     }
 
-    private function eachChild(Nav $item, callable $callable)
+    protected function transformNav(Nav $nav, callable $callback)
     {
-        if ($item->hasChild()) {
-            $item->child->each($callable);
+        if ($nav->hasChild()) {
+            $nav->getChild()->transform($callback);
         }
+
+        return $callback($nav);
     }
 
     public function isEmpty()

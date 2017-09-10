@@ -52,6 +52,12 @@ interface Nav
     public function getChild();
 
     /**
+     * @param NavCollection $child
+     * @return NavCollection
+     */
+    public function setChild(NavCollection $child);
+
+    /**
      * @param Nav $nav
      * @return Nav
      */

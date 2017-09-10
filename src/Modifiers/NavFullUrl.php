@@ -9,8 +9,10 @@ class NavFullUrl extends NavModifier
         return url()->to(parent::getUrl() ?: '#');
     }
 
-    public function tes()
+    public function toArray()
     {
-        
+        return array_merge(parent::toArray(), [
+            'url' => $this->getUrl()
+        ]);
     }
 }

@@ -25,6 +25,11 @@ class NavParent extends NavLink
         return $this->child;
     }
 
+    public function setChild(NavCollection $child)
+    {
+        return $this->child = $child;
+    }
+
     public function add(Nav $item)
     {
         return $this->child->add($item);

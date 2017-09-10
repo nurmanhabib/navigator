@@ -2,7 +2,7 @@
 
 namespace Nurmanhabib\Navigator\Modifiers;
 
-class NavInactive extends NavModifier
+class NavInactive extends NavActive
 {
     public function isActive()
     {

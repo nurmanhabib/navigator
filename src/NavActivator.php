@@ -1,6 +1,6 @@
 <?php
 
-namespace Nurmanhabib\Navigator;
+namespace Nurmanhabib\Navigators;
 
 use Illuminate\Http\Request;
 
