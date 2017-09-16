@@ -4,7 +4,7 @@ namespace Nurmanhabib\Navigator\Activators;
 
 use Nurmanhabib\Navigator\Items\Nav;
 
-class NoneActivator implements NavActivator
+class NoneActivator extends NavActivator
 {
     public function isActive(Nav $nav)
     {

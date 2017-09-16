@@ -72,6 +72,21 @@ abstract class NavModifier implements Nav
         return $this->nav->getType();
     }
 
+    public function setData(array $data)
+    {
+        $this->nav->setData($data);
+    }
+
+    public function getData()
+    {
+        return $this->nav->getData();
+    }
+
+    public function getOriginalNav()
+    {
+        return $this->nav;
+    }
+
     public function toArray()
     {
         return $this->nav->toArray();

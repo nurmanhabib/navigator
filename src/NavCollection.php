@@ -21,7 +21,7 @@ class NavCollection implements Arrayable, Jsonable
      */
     protected $items;
 
-    public function __construct(array $items = [])
+    public function __construct($items = [])
     {
         $this->items = new Collection;
 
@@ -76,7 +76,7 @@ class NavCollection implements Arrayable, Jsonable
             return $this->mapNav($nav, $callback);
         });
 
-        return new static($items->toArray());
+        return new static($items);
     }
 
     protected function mapNav(Nav $nav, callable $callback)

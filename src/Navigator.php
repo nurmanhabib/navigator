@@ -2,14 +2,15 @@
 
 namespace Nurmanhabib\Navigator;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Nurmanhabib\Navigator\Activators\LinkActivator;
 use Nurmanhabib\Navigator\Activators\NavActivator;
 use Nurmanhabib\Navigator\Activators\NoneActivator;
-use Nurmanhabib\Navigator\Items\Nav;
-use Nurmanhabib\Navigator\Modifiers\NavActive;
 use Nurmanhabib\Navigator\Renders\NavRender;
 use Nurmanhabib\Navigator\Renders\NavSimple;
 
-class Navigator
+class Navigator implements Arrayable, Jsonable
 {
     /**
      * @var NavCollection
@@ -37,16 +38,9 @@ class Navigator
         $this->render = new NavSimple;
     }
 
-    public function map(callable $callback)
+    public function setActive($url = '/')
     {
-        return new static($this->menu->map($callback));
-    }
-
-    public function transform(callable $callback)
-    {
-        $this->menu->transform($callback);
-
-        return $this;
+        return $this->setActivator(new LinkActivator($url));
     }
 
     public function setActivator(NavActivator $activator)
@@ -63,29 +57,47 @@ class Navigator
         return $this;
     }
 
-    public function applyActivator()
+    public function render(NavRender $render = null)
     {
-        $this->transform(function (Nav $nav) {
-            if ($this->activator->isActive($nav)) {
-                return new NavActive($nav);
-            }
+        $render = $render ?: $this->render;
 
-            return $nav;
-        });
+        return $render->render($this->getMenu());
     }
 
-    public function render()
+    public function getMenu()
     {
-        return $this->render->render($this->menu);
+        return $this->activator->apply($this->getOriginalMenu());
+    }
+
+    public function getOriginalMenu()
+    {
+        return $this->menu;
+    }
+
+    public function map(callable $callback)
+    {
+        return new static($this->menu->map($callback));
+    }
+
+    public function transform(callable $callback)
+    {
+        $this->menu->transform($callback);
+
+        return $this;
     }
 
     public function toArray()
     {
-        return $this->menu->toArray();
+        return $this->getMenu()->toArray();
     }
 
     public function toJson($options = 0)
     {
-        return $this->menu->toJson($options);
+        return $this->getMenu()->toJson($options);
+    }
+
+    public function __toString()
+    {
+        return (string) $this->render();
     }
 }

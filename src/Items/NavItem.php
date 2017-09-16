@@ -13,6 +13,8 @@ abstract class NavItem implements Nav, Arrayable, Jsonable
 
     protected $visible = true;
 
+    protected $data = [];
+
     abstract public function getText();
 
     abstract public function getUrl();
@@ -73,6 +75,16 @@ abstract class NavItem implements Nav, Arrayable, Jsonable
     public function add(Nav $item)
     {
         throw new NavChildException($this);
+    }
+
+    public function setData(array $data)
+    {
+        $this->data = $data;
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 
     public function toJson($options = 0)

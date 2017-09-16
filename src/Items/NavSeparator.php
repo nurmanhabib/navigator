@@ -7,6 +7,8 @@ use Nurmanhabib\Navigator\NavCollection;
 
 class NavSeparator implements Nav
 {
+    protected $data = [];
+
     public function getText()
     {
         return '';
@@ -55,6 +57,16 @@ class NavSeparator implements Nav
     public function getType()
     {
         return 'separator';
+    }
+
+    public function setData(array $data)
+    {
+        $this->data = $data;
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 
     public function toArray()

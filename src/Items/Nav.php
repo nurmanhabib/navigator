@@ -69,6 +69,17 @@ interface Nav
     public function getType();
 
     /**
+     * @param array $data
+     * @return void
+     */
+    public function setData(array $data);
+
+    /**
+     * @return array
+     */
+    public function getData();
+
+    /**
      * @return array
      */
     public function toArray();
