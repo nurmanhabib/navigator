@@ -24,6 +24,14 @@ class RequestActivator extends NavActivator
 
     public function isActive(Nav $nav)
     {
-        return $this->request->is($nav->getUrl());
+        $parsedUrl = parse_url($nav->getUrl());
+        $path = array_key_exists('path', $parsedUrl) ? $parsedUrl['path'] : '/';
+        $pathInfo = $this->request->getPathInfo();
+
+        if ('/' === $path && '/' !== $pathInfo) {
+            return false;
+        }
+
+        return substr($this->request->getPathInfo(), 0, strlen($path)) === $path;
     }
 }
