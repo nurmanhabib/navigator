@@ -84,6 +84,10 @@ abstract class NavModifier implements Nav
 
     public function getOriginalNav()
     {
+        if ($this->nav instanceof NavModifier) {
+            return $this->nav->getOriginalNav();
+        }
+
         return $this->nav;
     }
 
