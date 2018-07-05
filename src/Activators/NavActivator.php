@@ -32,7 +32,7 @@ abstract class NavActivator
 
     public function hasActive(NavCollection $menu)
     {
-        return $menu->getItems()->first(function (Nav $nav) {
+        return false !== $menu->getItems()->search(function (Nav $nav) {
             return $this->checkActive($nav);
         });
     }

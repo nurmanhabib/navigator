@@ -160,14 +160,14 @@ class NavCollection implements Arrayable, Jsonable
         return $callback($nav);
     }
 
+    public function isNotEmpty()
+    {
+        return !$this->isEmpty();
+    }
+
     public function isEmpty()
     {
         return $this->items->isEmpty();
-    }
-
-    public function isNotEmpty()
-    {
-        return $this->items->isNotEmpty();
     }
 
     public function getItems()
