@@ -69,6 +69,16 @@ class Navigator implements Arrayable, Jsonable
         return $this;
     }
 
+    public function reject(callable $callback = null)
+    {
+        return new static($this->menu->reject($callback));
+    }
+
+    public function filter(callable $callback = null)
+    {
+        return new static($this->menu->filter($callback));
+    }
+
     public function toArray()
     {
         return $this->getMenu()->toArray();

@@ -108,6 +108,58 @@ class NavCollection implements Arrayable, Jsonable
         return $callback($nav);
     }
 
+    public function reject(callable $callback = null)
+    {
+        if (!$callback) {
+            $callback = function (Nav $nav) {
+                return $nav->isVisible();
+            };
+        }
+
+        $items = $this->items->reject(function (Nav $nav) use ($callback) {
+            return $this->rejectNav($nav, $callback);
+        });
+
+        return new static($items);
+    }
+
+    protected function rejectNav(Nav $nav, callable $callback)
+    {
+        $nav = clone $nav;
+
+        if ($nav->hasChild()) {
+            $nav->setChild($nav->getChild()->reject($callback));
+        }
+
+        return $callback($nav);
+    }
+
+    public function filter(callable $callback = null)
+    {
+        if (!$callback) {
+            $callback = function (Nav $nav) {
+                return $nav->isVisible();
+            };
+        }
+
+        $items = $this->items->filter(function (Nav $nav) use ($callback) {
+            return $this->filterNav($nav, $callback);
+        });
+
+        return new static($items);
+    }
+
+    protected function filterNav(Nav $nav, callable $callback)
+    {
+        $nav = clone $nav;
+
+        if ($nav->hasChild()) {
+            $nav->setChild($nav->getChild()->filter($callback));
+        }
+
+        return $callback($nav);
+    }
+
     public function isEmpty()
     {
         return $this->items->isEmpty();

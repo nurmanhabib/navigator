@@ -3,13 +3,10 @@
 namespace Nurmanhabib\Navigator\Modifiers;
 
 use Nurmanhabib\Navigator\Items\Nav;
-use Nurmanhabib\Navigator\Items\NavDataTrait;
 use Nurmanhabib\Navigator\NavCollection;
 
 abstract class NavModifier implements Nav
 {
-    use NavDataTrait;
-
     /**
      * @var Nav
      */
@@ -78,6 +75,21 @@ abstract class NavModifier implements Nav
     public function getOriginalNav()
     {
         return $this->nav;
+    }
+
+    public function setData(array $data)
+    {
+        return $this->nav->setData($data);
+    }
+
+    public function hasData($key)
+    {
+        return $this->nav->hasData($key);
+    }
+
+    public function getData($key = null, $default = null)
+    {
+        return $this->nav->getData($key, $default);
     }
 
     public function toArray()
