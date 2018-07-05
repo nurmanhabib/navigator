@@ -1,0 +1,28 @@
+{
+  "name": "nurmanhabib/navigator",
+  "description": "Generate navigator or menu with NavCollection",
+  "license": "MIT",
+  "keywords": [
+    "navigation",
+    "navigator",
+    "menu",
+    "sidebar",
+    "navbar"
+  ],
+  "authors": [
+    {
+      "name": "Habib Nurrahman",
+      "email": "nurmanhabib@yahoo.co.id"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.9",
+    "illuminate/support": "5.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Nurmanhabib\\Navigator\\": "src/"
+    }
+  },
+  "minimum-stability": "stable"
+}
