@@ -2,12 +2,10 @@
 
 namespace Nurmanhabib\Navigator\Items;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
 use Nurmanhabib\Navigator\Exceptions\NavChildException;
 use Nurmanhabib\Navigator\NavCollection;
 
-abstract class NavItem implements Nav, Arrayable, Jsonable
+abstract class NavItem implements Nav
 {
     use NavDataTrait;
 

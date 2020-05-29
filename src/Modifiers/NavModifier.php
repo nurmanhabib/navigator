@@ -94,6 +94,21 @@ abstract class NavModifier implements Nav
 
     public function toArray()
     {
-        return $this->nav->toArray();
+        return [
+            'text' => $this->getText(),
+            'url' => $this->getUrl(),
+            'icon' => $this->getIcon(),
+            'type' => $this->getType(),
+            'is_active' => $this->isActive(),
+            'is_visible' => $this->isVisible(),
+            'has_child' => $this->hasChild(),
+            'data' => $this->getData(),
+            'child' => $this->getChild()->toArray(),
+        ];
+    }
+
+    public function toJson($options = 0)
+    {
+        return json_encode($this->toArray(), $options);
     }
 }

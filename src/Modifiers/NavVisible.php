@@ -8,11 +8,4 @@ class NavVisible extends NavModifier
     {
         return true;
     }
-
-    public function toArray()
-    {
-        return array_merge(parent::toArray(), [
-            'is_visible' => $this->isVisible()
-        ]);
-    }
 }

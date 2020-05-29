@@ -90,4 +90,9 @@ interface Nav
      * @return array
      */
     public function toArray();
+
+    /**
+     * @return string
+     */
+    public function toJson($options = 0);
 }
