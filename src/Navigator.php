@@ -2,15 +2,13 @@
 
 namespace Nurmanhabib\Navigator;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
 use Nurmanhabib\Navigator\Activators\LinkActivator;
 use Nurmanhabib\Navigator\Activators\NavActivator;
 use Nurmanhabib\Navigator\Activators\NoneActivator;
 use Nurmanhabib\Navigator\Renders\NavRender;
 use Nurmanhabib\Navigator\Renders\NavSimple;
 
-class Navigator implements Arrayable, Jsonable
+class Navigator
 {
     /**
      * @var NavCollection
@@ -94,6 +92,13 @@ class Navigator implements Arrayable, Jsonable
         return $this->menu;
     }
 
+    public function render(NavRender $render = null)
+    {
+        $render = $render ?: $this->render;
+
+        return $render->render($this->getMenu());
+    }
+
     public function toJson($options = 0)
     {
         return $this->getMenu()->toJson($options);
@@ -102,12 +107,5 @@ class Navigator implements Arrayable, Jsonable
     public function __toString()
     {
         return (string)$this->render();
-    }
-
-    public function render(NavRender $render = null)
-    {
-        $render = $render ?: $this->render;
-
-        return $render->render($this->getMenu());
     }
 }

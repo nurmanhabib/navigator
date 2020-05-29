@@ -8,8 +8,6 @@ use Nurmanhabib\Navigator\NavCollection;
 
 abstract class NavActivator
 {
-    abstract public function isActive(Nav $nav);
-
     /**
      * @param NavCollection $menu
      * @return NavCollection
@@ -21,6 +19,20 @@ abstract class NavActivator
         });
     }
 
+    public function hasActive(NavCollection $menu)
+    {
+        $result = false;
+
+        foreach ($menu->getItems() as $nav) {
+            if ($this->checkActive($nav)) {
+                $result = true;
+                break;
+            }
+        }
+
+        return $result;
+    }
+
     protected function checkActive(Nav $nav)
     {
         if ($nav->hasChild()) {
@@ -30,12 +42,11 @@ abstract class NavActivator
         return $this->isActive($nav);
     }
 
-    public function hasActive(NavCollection $menu)
-    {
-        return false !== $menu->getItems()->search(function (Nav $nav) {
-            return $this->checkActive($nav);
-        });
-    }
+    /**
+     * @param Nav $nav
+     * @return bool
+     */
+    abstract public function isActive(Nav $nav);
 
     public function makeActive(Nav $nav)
     {
