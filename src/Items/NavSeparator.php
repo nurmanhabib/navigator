@@ -54,6 +54,11 @@ class NavSeparator implements Nav
         throw new NavChildException($this);
     }
 
+    public function getPattern()
+    {
+        return '';
+    }
+
     public function getType()
     {
         return 'separator';
@@ -64,5 +69,10 @@ class NavSeparator implements Nav
         return [
             'type' => $this->getType(),
         ];
+    }
+
+    public function toJson($options = 0)
+    {
+        return json_encode($this->toArray(), $options);
     }
 }

@@ -44,13 +44,7 @@ abstract class NavHtmlRender implements NavRender
      * @param Nav $nav
      * @return string
      */
-    abstract public function renderChildActive(Nav $nav);
-
-    /**
-     * @param Nav $nav
-     * @return string
-     */
-    abstract public function renderChild(Nav $nav);
+    abstract public function renderItem(Nav $nav);
 
     /**
      * @param Nav $nav
@@ -62,7 +56,13 @@ abstract class NavHtmlRender implements NavRender
      * @param Nav $nav
      * @return string
      */
-    abstract public function renderItem(Nav $nav);
+    abstract public function renderChild(Nav $nav);
+
+    /**
+     * @param Nav $nav
+     * @return string
+     */
+    abstract public function renderChildActive(Nav $nav);
 
     /**
      * @param string $html

@@ -12,10 +12,23 @@ class NavSimple extends NavHtmlRender
      */
     public function renderItemActive(Nav $nav)
     {
-        return vsprintf('<li><strong><a href="%s">%s</a></strong></li>', [
-            $nav->getUrl(),
-            $nav->getText(),
-        ]);
+        switch ($nav->getType()) {
+            case 'link':
+            case 'home':
+                return vsprintf('<li><strong><a href="%s">%s</a></strong></li>', [
+                    $nav->getUrl(),
+                    $nav->getText(),
+                ]);
+
+            case 'separator':
+                return '<li style="list-style-type: none;">&nbsp;</li>';
+
+            case 'heading':
+                return sprintf('<li><strong>%s</strong></li>', $nav->getText());
+
+            default:
+                return '';
+        }
     }
 
     /**
@@ -24,10 +37,23 @@ class NavSimple extends NavHtmlRender
      */
     public function renderItem(Nav $nav)
     {
-        return vsprintf('<li><a href="%s">%s</a></li>', [
-            $nav->getUrl(),
-            $nav->getText(),
-        ]);
+        switch ($nav->getType()) {
+            case 'link':
+            case 'home':
+                return vsprintf('<li><a href="%s">%s</a></li>', [
+                    $nav->getUrl(),
+                    $nav->getText(),
+                ]);
+
+            case 'separator':
+                return '<li style="list-style-type: none;">&nbsp;</li>';
+
+            case 'heading':
+                return sprintf('<li><strong>%s</strong></li>', $nav->getText());
+
+            default:
+                return '';
+        }
     }
 
     /**
@@ -39,7 +65,7 @@ class NavSimple extends NavHtmlRender
         return vsprintf('<li><strong><a href="%s">%s</a></strong>%s</li>', [
             $nav->getUrl(),
             $nav->getText(),
-            $this->render($nav->getChild()),
+            $nav->getChild()->render(),
         ]);
     }
 
@@ -52,7 +78,7 @@ class NavSimple extends NavHtmlRender
         return vsprintf('<li><a href="%s">%s</a>%s</li>', [
             $nav->getUrl(),
             $nav->getText(),
-            $this->render($nav->getChild()),
+            $nav->getChild()->render(),
         ]);
     }
 

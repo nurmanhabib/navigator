@@ -2,18 +2,18 @@
 
 namespace Nurmanhabib\Navigator\Items;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
 use Nurmanhabib\Navigator\Exceptions\NavChildException;
 use Nurmanhabib\Navigator\NavCollection;
 
-abstract class NavItem implements Nav, Arrayable, Jsonable
+abstract class NavItem implements Nav
 {
     use NavDataTrait;
 
     protected $active = false;
 
     protected $visible = true;
+
+    protected $pattern;
 
     abstract public function getText();
 
@@ -75,6 +75,22 @@ abstract class NavItem implements Nav, Arrayable, Jsonable
     public function add(Nav $item)
     {
         throw new NavChildException($this);
+    }
+
+    public function match($pattern)
+    {
+        $this->pattern = $pattern;
+
+        return $this;
+    }
+
+    public function getPattern()
+    {
+        if (empty($this->pattern)) {
+            $this->pattern = $this->getUrl();
+        }
+
+        return $this->pattern;
     }
 
     public function toJson($options = 0)

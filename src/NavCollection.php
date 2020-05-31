@@ -2,28 +2,35 @@
 
 namespace Nurmanhabib\Navigator;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Support\Collection;
 use Nurmanhabib\Navigator\Items\Nav;
 use Nurmanhabib\Navigator\Items\NavHeading;
 use Nurmanhabib\Navigator\Items\NavHome;
 use Nurmanhabib\Navigator\Items\NavLink;
 use Nurmanhabib\Navigator\Items\NavParent;
 use Nurmanhabib\Navigator\Items\NavSeparator;
+use Nurmanhabib\Navigator\Renders\NavRender;
+use Nurmanhabib\Navigator\Renders\NavSimple;
 
-class NavCollection implements Arrayable, Jsonable
+class NavCollection
 {
     /**
      * Items of nav links
      *
-     * @var Collection
+     * @var array
      */
     protected $items;
 
-    public function __construct($items = [])
+    /**
+     * @var NavRender
+     */
+    protected $renderer;
+
+    public function __construct($items = [], NavRender $renderer = null)
     {
-        $this->items = new Collection;
+        $this->items = [];
+
+        // Default Renderer
+        $this->renderer = $renderer ?: new NavSimple;
 
         foreach ($items as $item) {
             $this->add($item);
@@ -56,27 +63,25 @@ class NavCollection implements Arrayable, Jsonable
 
         $callback($child = new self);
 
-        $child->items->each(function (Nav $nav) use ($parent) {
-            $parent->add($nav);
-        });
+        $parent->setChild($child);
 
         return $parent;
     }
 
     public function add(Nav $item)
     {
-        $this->items->push($item);
+        $this->items[] = $item;
 
         return $item;
     }
 
     public function map(callable $callback)
     {
-        $items = $this->items->map(function (Nav $nav) use ($callback) {
+        $items = array_map(function (Nav $nav) use ($callback) {
             return $this->mapNav($nav, $callback);
-        });
+        }, $this->items);
 
-        return new static($items);
+        return new static($items, $this->renderer);
     }
 
     protected function mapNav(Nav $nav, callable $callback)
@@ -92,9 +97,9 @@ class NavCollection implements Arrayable, Jsonable
 
     public function transform(callable $callback)
     {
-        $this->items->transform(function (Nav $nav) use ($callback) {
+        $this->items = array_map(function (Nav $nav) use ($callback) {
             return $this->transformNav($nav, $callback);
-        });
+        }, $this-items);
 
         return $this;
     }
@@ -116,11 +121,11 @@ class NavCollection implements Arrayable, Jsonable
             };
         }
 
-        $items = $this->items->reject(function (Nav $nav) use ($callback) {
-            return $this->rejectNav($nav, $callback);
+        $items = array_filter($this->items, function (Nav $nav) use ($callback) {
+            return !$this->rejectNav($nav, $callback);
         });
 
-        return new static($items);
+        return new static($items, $this->renderer);
     }
 
     protected function rejectNav(Nav $nav, callable $callback)
@@ -142,11 +147,11 @@ class NavCollection implements Arrayable, Jsonable
             };
         }
 
-        $items = $this->items->filter(function (Nav $nav) use ($callback) {
+        $items = array_filter($this->items, function (Nav $nav) use ($callback) {
             return $this->filterNav($nav, $callback);
         });
 
-        return new static($items);
+        return new static($items, $this->renderer);
     }
 
     protected function filterNav(Nav $nav, callable $callback)
@@ -167,12 +172,35 @@ class NavCollection implements Arrayable, Jsonable
 
     public function isEmpty()
     {
-        return $this->items->isEmpty();
+        return empty($this->items);
     }
 
     public function getItems()
     {
         return $this->items;
+    }
+
+    /**
+     * @param NavRender $renderer
+     */
+    public function setRenderer(NavRender $renderer)
+    {
+        $this->renderer = $renderer;
+    }
+
+    /**
+     * @return NavRender
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    public function render(NavRender $renderer = null)
+    {
+        $renderer = $renderer ?: $this->renderer;
+
+        return $renderer->render($this);
     }
 
     /**
@@ -193,8 +221,8 @@ class NavCollection implements Arrayable, Jsonable
      */
     public function toArray()
     {
-        return $this->items->map(function (Nav $item) {
+        return array_map(function (Nav $item) {
             return $item->toArray();
-        })->toArray();
+        }, $this->items);
     }
 }
