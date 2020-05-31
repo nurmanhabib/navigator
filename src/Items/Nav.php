@@ -58,6 +58,11 @@ interface Nav
     public function setChild(NavCollection $child);
 
     /**
+     * @return string
+     */
+    public function getPattern();
+
+    /**
      * @param Nav $nav
      * @return Nav
      */
@@ -82,6 +87,7 @@ interface Nav
     public function getData($key = null, $default = null);
 
     /**
+     * @param $key
      * @return array
      */
     public function hasData($key);
@@ -92,6 +98,7 @@ interface Nav
     public function toArray();
 
     /**
+     * @param int $options
      * @return string
      */
     public function toJson($options = 0);

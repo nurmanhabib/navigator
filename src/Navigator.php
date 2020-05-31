@@ -4,9 +4,8 @@ namespace Nurmanhabib\Navigator;
 
 use Nurmanhabib\Navigator\Activators\LinkActivator;
 use Nurmanhabib\Navigator\Activators\NavActivator;
-use Nurmanhabib\Navigator\Activators\NoneActivator;
+use Nurmanhabib\Navigator\Activators\RequestUriActivator;
 use Nurmanhabib\Navigator\Renders\NavRender;
-use Nurmanhabib\Navigator\Renders\NavSimple;
 
 class Navigator
 {
@@ -21,19 +20,14 @@ class Navigator
     protected $activator;
 
     /**
-     * @var NavRender
-     */
-    protected $render;
-
-    /**
      * Navigator constructor.
      * @param NavCollection $menu
+     * @param NavActivator|null $activator
      */
-    public function __construct(NavCollection $menu)
+    public function __construct(NavCollection $menu, NavActivator $activator = null)
     {
         $this->menu = $menu;
-        $this->activator = new NoneActivator;
-        $this->render = new NavSimple;
+        $this->activator = $activator ?: new RequestUriActivator;
     }
 
     public function setActive($url = '/')
@@ -44,13 +38,6 @@ class Navigator
     public function setActivator(NavActivator $activator)
     {
         $this->activator = $activator;
-
-        return $this;
-    }
-
-    public function setRender(NavRender $render)
-    {
-        $this->render = $render;
 
         return $this;
     }
@@ -69,12 +56,12 @@ class Navigator
 
     public function reject(callable $callback = null)
     {
-        return new static($this->menu->reject($callback));
+        return new static($this->menu->reject($callback), $this->activator);
     }
 
     public function filter(callable $callback = null)
     {
-        return new static($this->menu->filter($callback));
+        return new static($this->menu->filter($callback), $this->activator);
     }
 
     public function toArray()
@@ -84,7 +71,7 @@ class Navigator
 
     public function getMenu()
     {
-        return $this->activator->apply($this->getOriginalMenu());
+        return $this->activator->apply($this->getOriginalMenu()->filter());
     }
 
     public function getOriginalMenu()
@@ -92,11 +79,9 @@ class Navigator
         return $this->menu;
     }
 
-    public function render(NavRender $render = null)
+    public function render(NavRender $renderer = null)
     {
-        $render = $render ?: $this->render;
-
-        return $render->render($this->getMenu());
+        return $this->getMenu()->render($renderer);
     }
 
     public function toJson($options = 0)

@@ -92,6 +92,11 @@ abstract class NavModifier implements Nav
         return $this->nav->getData($key, $default);
     }
 
+    public function getPattern()
+    {
+        return $this->nav->getPattern();
+    }
+
     public function toArray()
     {
         return [

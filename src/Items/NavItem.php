@@ -13,6 +13,8 @@ abstract class NavItem implements Nav
 
     protected $visible = true;
 
+    protected $pattern;
+
     abstract public function getText();
 
     abstract public function getUrl();
@@ -73,6 +75,22 @@ abstract class NavItem implements Nav
     public function add(Nav $item)
     {
         throw new NavChildException($this);
+    }
+
+    public function match($pattern)
+    {
+        $this->pattern = $pattern;
+
+        return $this;
+    }
+
+    public function getPattern()
+    {
+        if (empty($this->pattern)) {
+            $this->pattern = $this->getUrl();
+        }
+
+        return $this->pattern;
     }
 
     public function toJson($options = 0)

@@ -8,19 +8,29 @@ use Nurmanhabib\Navigator\Items\NavHome;
 use Nurmanhabib\Navigator\Items\NavLink;
 use Nurmanhabib\Navigator\Items\NavParent;
 use Nurmanhabib\Navigator\Items\NavSeparator;
+use Nurmanhabib\Navigator\Renders\NavRender;
+use Nurmanhabib\Navigator\Renders\NavSimple;
 
 class NavCollection
 {
     /**
      * Items of nav links
      *
-     * @var Collection
+     * @var array
      */
     protected $items;
 
-    public function __construct($items = [])
+    /**
+     * @var NavRender
+     */
+    protected $renderer;
+
+    public function __construct($items = [], NavRender $renderer = null)
     {
         $this->items = [];
+
+        // Default Renderer
+        $this->renderer = $renderer ?: new NavSimple;
 
         foreach ($items as $item) {
             $this->add($item);
@@ -53,9 +63,7 @@ class NavCollection
 
         $callback($child = new self);
 
-        array_walk($child->items, function (Nav $nav) use ($parent) {
-            $parent->add($nav);
-        });
+        $parent->setChild($child);
 
         return $parent;
     }
@@ -73,7 +81,7 @@ class NavCollection
             return $this->mapNav($nav, $callback);
         }, $this->items);
 
-        return new static($items);
+        return new static($items, $this->renderer);
     }
 
     protected function mapNav(Nav $nav, callable $callback)
@@ -113,11 +121,11 @@ class NavCollection
             };
         }
 
-        $items = $this->items->reject(function (Nav $nav) use ($callback) {
-            return $this->rejectNav($nav, $callback);
+        $items = array_filter($this->items, function (Nav $nav) use ($callback) {
+            return !$this->rejectNav($nav, $callback);
         });
 
-        return new static($items);
+        return new static($items, $this->renderer);
     }
 
     protected function rejectNav(Nav $nav, callable $callback)
@@ -143,7 +151,7 @@ class NavCollection
             return $this->filterNav($nav, $callback);
         });
 
-        return new static($items);
+        return new static($items, $this->renderer);
     }
 
     protected function filterNav(Nav $nav, callable $callback)
@@ -170,6 +178,29 @@ class NavCollection
     public function getItems()
     {
         return $this->items;
+    }
+
+    /**
+     * @param NavRender $renderer
+     */
+    public function setRenderer(NavRender $renderer)
+    {
+        $this->renderer = $renderer;
+    }
+
+    /**
+     * @return NavRender
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    public function render(NavRender $renderer = null)
+    {
+        $renderer = $renderer ?: $this->renderer;
+
+        return $renderer->render($this);
     }
 
     /**

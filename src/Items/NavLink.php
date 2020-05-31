@@ -25,6 +25,13 @@ class NavLink extends NavItem
         return $this->url;
     }
 
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
     public function getIcon()
     {
         return $this->icon;

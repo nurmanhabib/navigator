@@ -65,7 +65,7 @@ class NavSimple extends NavHtmlRender
         return vsprintf('<li><strong><a href="%s">%s</a></strong>%s</li>', [
             $nav->getUrl(),
             $nav->getText(),
-            $this->render($nav->getChild()),
+            $nav->getChild()->render(),
         ]);
     }
 
@@ -78,7 +78,7 @@ class NavSimple extends NavHtmlRender
         return vsprintf('<li><a href="%s">%s</a>%s</li>', [
             $nav->getUrl(),
             $nav->getText(),
-            $this->render($nav->getChild()),
+            $nav->getChild()->render(),
         ]);
     }
 
