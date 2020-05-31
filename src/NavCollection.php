@@ -99,7 +99,7 @@ class NavCollection
     {
         $this->items = array_map(function (Nav $nav) use ($callback) {
             return $this->transformNav($nav, $callback);
-        }, $this-items);
+        }, $this->items);
 
         return $this;
     }
