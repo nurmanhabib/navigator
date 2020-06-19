@@ -46,6 +46,76 @@ $navigator = new Navigator($menu);
 
 echo $navigator->render();
 ```
+
+Anda juga bisa membuat menggunakan data Array
+
+```php
+$data = [
+    [
+        'text' => 'Home',
+        'url' => '/'
+    ],
+    [
+        'text' => 'Berita',
+        'url' => 'berita',
+        'match' => '/berita*'
+    ],
+    [
+        'type' => 'separator'
+    ],
+    [
+        'text' => 'Kategori',
+        'child' => [
+            [
+                'text' => 'Teknologi',
+                'url' => 'kategori/teknologi'
+            ],
+            [
+                'text' => 'Otomotif',
+                'url' => 'kategori/otomotif'
+            ],
+            [
+                'text' => 'Lifestyle',
+                'child' => [
+                    [
+                        'text' => 'Pria',
+                        'url' => 'lifestyle-pria'
+                    ],
+                    [
+                        'text' => 'Wanita',
+                        'url' => 'lifestyle-wanita'
+                    ],
+                ]
+            ],
+        ]
+    ],
+    [
+        'type' => 'heading',
+        'text' => 'Configuration'
+    ],
+    [
+        'text' => 'Account',
+        'child' => [
+            [
+                'text' => 'Change Password',
+                'url' => 'change-password'
+            ],
+            [
+                'text' => 'Logout',
+                'url' => 'logout'
+            ],
+        ]
+    ],
+];
+
+$factory = new ArrayNavCollectionFactory($data);
+
+$menu = $factory->createNavCollection();
+
+$navigator = new Navigator($menu);
+
+echo $navigator->render();
+```
    
 #### API
 
@@ -68,13 +138,24 @@ echo $navigator->render();
    
    Anda bisa menambahkan data pada item menu untuk digunakan pada saat custom render.
    
- 3. hasData
+3. hasData
     ```php
     $item->hasData('key');
     ```
-   
- 4. getData
+
+4. getData
     ```php
     echo $item->getData('key');
     ```
    
+5. getType
+    ```php
+    echo $item->getType();
+    ```
+   
+   Type yang didukung saat ini :
+   
+   - link
+   - home
+   - heading
+   - separator
