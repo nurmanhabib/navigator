@@ -2,6 +2,7 @@
 
 namespace Nurmanhabib\Navigator;
 
+use Nurmanhabib\Navigator\Factories\ArrayNavFactory;
 use Nurmanhabib\Navigator\Items\Nav;
 use Nurmanhabib\Navigator\Items\NavHeading;
 use Nurmanhabib\Navigator\Items\NavHome;
@@ -35,6 +36,22 @@ class NavCollection
         foreach ($items as $item) {
             $this->add($item);
         }
+    }
+
+    public function addArrays(array $items)
+    {
+        foreach ($items as $item) {
+            $this->addArray($item);
+        }
+
+        return $this;
+    }
+
+    public function addArray(array $item)
+    {
+        $navFactory = new ArrayNavFactory($item);
+
+        return $this->add($nav = $navFactory->createNav());
     }
 
     public function addLink($text, $url = '#', $icon = null)
