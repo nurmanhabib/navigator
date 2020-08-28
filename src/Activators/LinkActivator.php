@@ -25,10 +25,10 @@ class LinkActivator extends NavActivator
 
     protected function matchPath(Nav $nav)
     {
-        $pathPattern = ltrim(parse_url($this->uri, PHP_URL_PATH), '/');
-        $navPath = ltrim(parse_url($nav->getPattern(), PHP_URL_PATH), '/');
+        $pathPattern = trim(parse_url($this->uri, PHP_URL_PATH), '/') . '/';
+        $navPattern = ltrim($nav->getPattern(), '/');
 
-        return fnmatch($pathPattern, $navPath) || fnmatch($navPath, $pathPattern);
+        return strpos($pathPattern, $navPattern) !== false || fnmatch($navPattern, $pathPattern);
     }
 
     protected function matchQuery(Nav $nav)
@@ -39,7 +39,7 @@ class LinkActivator extends NavActivator
         parse_str($expectedQuery, $expectedQuery);
         parse_str($navQuery, $navQuery);
 
-        return empty(array_diff($expectedQuery, $navQuery));
+        return empty(array_diff($navQuery, $expectedQuery));
     }
 
     protected function matchFragment(Nav $nav)
