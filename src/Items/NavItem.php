@@ -87,7 +87,7 @@ abstract class NavItem implements Nav
     public function getPattern()
     {
         if (empty($this->pattern)) {
-            $this->pattern = $this->getUrl();
+            $this->pattern = parse_url($this->getUrl(), PHP_URL_PATH);
         }
 
         return $this->pattern;
