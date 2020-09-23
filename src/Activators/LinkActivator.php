@@ -28,6 +28,10 @@ class LinkActivator extends NavActivator
         $pathPattern = trim(parse_url($this->uri, PHP_URL_PATH), '/') . '/';
         $navPattern = ltrim($nav->getPattern(), '/');
 
+        if (empty($navPattern)) {
+            return false;
+        }
+
         return strpos($pathPattern, $navPattern) !== false || fnmatch($navPattern, $pathPattern);
     }
 
