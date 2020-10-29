@@ -58,7 +58,7 @@ interface Nav
     public function setChild(NavCollection $child);
 
     /**
-     * @return string
+     * @return array
      */
     public function getPattern();
 

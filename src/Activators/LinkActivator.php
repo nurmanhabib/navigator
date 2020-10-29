@@ -25,32 +25,65 @@ class LinkActivator extends NavActivator
 
     protected function matchPath(Nav $nav)
     {
-        $pathPattern = trim(parse_url($this->uri, PHP_URL_PATH), '/') . '/';
-        $navPattern = ltrim($nav->getPattern(), '/');
+        $currentPath = parse_url($this->uri, PHP_URL_PATH);
 
-        if (empty($navPattern)) {
-            return false;
+        $match = null;
+
+        foreach ($nav->getPattern() as $navPattern) {
+            if (empty($navPattern)) {
+                continue;
+            }
+
+            $navPath = parse_url($navPattern, PHP_URL_PATH);
+            $match = strpos($currentPath, $navPath) !== false || fnmatch($navPath, $currentPath);
+
+            if ($match) {
+                break;
+            }
         }
 
-        return strpos($pathPattern, $navPattern) !== false || fnmatch($navPattern, $pathPattern);
+        return $match === true;
     }
 
     protected function matchQuery(Nav $nav)
     {
         $expectedQuery = parse_url($this->uri, PHP_URL_QUERY);
-        $navQuery = parse_url($nav->getPattern(), PHP_URL_QUERY);
 
         parse_str($expectedQuery, $expectedQuery);
-        parse_str($navQuery, $navQuery);
 
-        return empty(array_diff($navQuery, $expectedQuery));
+        $match = null;
+
+        foreach ($nav->getPattern() as $navPattern) {
+            $navQuery = parse_url($navPattern, PHP_URL_QUERY);
+
+            parse_str($navQuery, $navQuery);
+
+            $match = empty(array_diff($navQuery, $expectedQuery));
+
+            if ($match) {
+                break;
+            }
+        }
+
+        return $match === true;
     }
 
     protected function matchFragment(Nav $nav)
     {
         $expectedFragment = parse_url($this->uri, PHP_URL_FRAGMENT);
-        $navFragment = parse_url($nav->getPattern(), PHP_URL_FRAGMENT);
 
-        return $expectedFragment === $navFragment;
+        $match = null;
+
+        foreach ($nav->getPattern() as $navPattern) {
+            $navFragment = parse_url($navPattern, PHP_URL_FRAGMENT);
+
+            $match = $expectedFragment === $navFragment;
+
+            if ($match) {
+                break;
+            }
+        }
+
+        return $match === true;
     }
 }

@@ -56,7 +56,7 @@ class NavSeparator implements Nav
 
     public function getPattern()
     {
-        return '';
+        return [];
     }
 
     public function getType()
