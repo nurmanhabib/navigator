@@ -13,7 +13,7 @@ abstract class NavItem implements Nav
 
     protected $visible = true;
 
-    protected $pattern;
+    protected $patterns = [];
 
     abstract public function getText();
 
@@ -79,18 +79,31 @@ abstract class NavItem implements Nav
 
     public function match($pattern)
     {
-        $this->pattern = $pattern;
+        if (is_array($pattern)) {
+            return $this->matches($pattern);
+        }
+
+        $this->patterns[] = '/' . ltrim($pattern, '/');
+
+        return $this;
+    }
+
+    public function matches(array $patterns = [])
+    {
+        foreach ($patterns as $pattern) {
+            $this->match((string)$pattern);
+        }
 
         return $this;
     }
 
     public function getPattern()
     {
-        if (empty($this->pattern)) {
-            $this->pattern = parse_url($this->getUrl(), PHP_URL_PATH);
+        if (empty($this->patterns)) {
+            $this->match(parse_url($this->getUrl(), PHP_URL_PATH));
         }
 
-        return $this->pattern;
+        return $this->patterns;
     }
 
     public function toJson($options = 0)
