@@ -15,6 +15,8 @@ abstract class NavItem implements Nav
 
     protected $patterns = [];
 
+    protected $patternMatchExact = false;
+
     abstract public function getText();
 
     abstract public function getUrl();
@@ -97,10 +99,40 @@ abstract class NavItem implements Nav
         return $this;
     }
 
+    public function matchExact($exact = true)
+    {
+        $this->patternMatchExact = $exact;
+
+        return $this;
+    }
+
+    public function patternIsMatchExact()
+    {
+        return $this->patternMatchExact;
+    }
+
     public function getPattern()
     {
         if (empty($this->patterns)) {
-            $this->match(parse_url($this->getUrl(), PHP_URL_PATH));
+            $path = parse_url($this->getUrl(), PHP_URL_PATH);
+            $query = parse_url($this->getUrl(), PHP_URL_QUERY);
+            $fragment = parse_url($this->getUrl(), PHP_URL_FRAGMENT);
+
+            $relavtiveUrl = '';
+            
+            if ($path) {
+                $relavtiveUrl = $path;
+            }
+            
+            if ($query) {
+                $relavtiveUrl .= '?' . $query;
+            }
+            
+            if ($fragment) {
+                $relavtiveUrl .= '#' . $fragment;
+            }
+
+            $this->match($relavtiveUrl);
         }
 
         return $this->patterns;

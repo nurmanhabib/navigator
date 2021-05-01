@@ -97,6 +97,11 @@ abstract class NavModifier implements Nav
         return $this->nav->getPattern();
     }
 
+    public function patternIsMatchExact()
+    {
+        return $this->nav->patternIsMatchExact();
+    }
+
     public function toArray()
     {
         return [

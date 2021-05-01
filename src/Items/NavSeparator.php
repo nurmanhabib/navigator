@@ -59,6 +59,11 @@ class NavSeparator implements Nav
         return [];
     }
 
+    public function patternIsMatchExact()
+    {
+        return false;
+    }
+
     public function getType()
     {
         return 'separator';
