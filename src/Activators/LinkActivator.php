@@ -35,7 +35,12 @@ class LinkActivator extends NavActivator
             }
 
             $navPath = parse_url($navPattern, PHP_URL_PATH);
-            $match = strpos($currentPath, $navPath) !== false || fnmatch($navPath, $currentPath);
+
+            if ($nav->patternIsMatchExact()) {
+                $match = $currentPath === $navPath;
+            } else {
+                $match = strpos($currentPath, $navPath) !== false || fnmatch($navPath, $currentPath);
+            }
 
             if ($match) {
                 break;
@@ -58,7 +63,11 @@ class LinkActivator extends NavActivator
 
             parse_str($navQuery, $navQuery);
 
-            $match = empty(array_diff($navQuery, $expectedQuery));
+            if ($nav->patternIsMatchExact()) {
+                $match = $navQuery == $expectedQuery;
+            } else {
+                $match = empty(array_diff($navQuery, $expectedQuery));
+            }
 
             if ($match) {
                 break;

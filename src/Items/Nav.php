@@ -63,6 +63,11 @@ interface Nav
     public function getPattern();
 
     /**
+     * @return bool
+     */
+    public function patternIsMatchExact();
+
+    /**
      * @param Nav $nav
      * @return Nav
      */
